@@ -9,5 +9,5 @@ import { a } from './A';
 jest.mock('./C');
 
 test('A.js', () => {
-  expect(a()).toEqual('REAL C');
+  expect(a()).toBeUndefined();
 });

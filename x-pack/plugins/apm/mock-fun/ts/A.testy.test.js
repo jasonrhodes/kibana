@@ -8,6 +8,6 @@ import { a } from './A';
 
 jest.mock('./C');
 
-test('A.ts', () => {
+test('JS test file -> importing .ts files', () => {
   expect(a()).toBeUndefined();
 });

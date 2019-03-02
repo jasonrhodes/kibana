@@ -7,31 +7,51 @@ To reproduce:
 - Navigate to the x-pack root
 - Run `$ node scripts/jest --watch apm/mock-fun`
 
-You'll see that the JS version of the test fails because the mock has taken over and produced "undefined", whereas the TS version of the test passes because the real function is still being called.
+There are two directories, `./ts` and `./js`. The ts folder has 3 .ts files and 2 test files, while the the .js folder has 3 .js files and 2 test files. In both folders, there is a .ts test file and a .js test file.
+
+The test files mock out the 'C' file and then expect that the function will return undefined since the mock is not returning anything. If the `a()` function instead returns the real value from `C`, then the test fails.
+
+- The `.js` test files both pass, whether they import .js files or .ts files.
+- The `.ts` test files both fail, whether they import .js files or .ts files.
 
 ```shell
- FAIL  plugins/apm/mock-fun/js/A.testy.test.js
-  ● A.js
+ PASS  plugins/apm/mock-fun/js/A.testy.test.js
+ PASS  plugins/apm/mock-fun/ts/A.testy.test.js
+ FAIL  plugins/apm/mock-fun/ts/A.testy.test.ts
+  ● A.ts
 
-    expect(received).toEqual(expected)
+    expect(received).toBeUndefined()
 
-    Expected: "REAL C"
-    Received: undefined
+    Received: "REAL C"
 
       10 |
-      11 | test('A.js', () => {
-    > 12 |   expect(a()).toEqual('REAL C');
+      11 | test('A.ts', () => {
+    > 12 |   expect(a()).toBeUndefined();
          |               ^
       13 | });
       14 |
 
-      at Object.toEqual (plugins/apm/mock-fun/js/A.testy.test.js:12:15)
+      at Object.<anonymous>.test (plugins/apm/mock-fun/ts/A.testy.test.ts:12:15)
 
- PASS  plugins/apm/mock-fun/ts/A.testy.test.ts
+ FAIL  plugins/apm/mock-fun/js/A.testy.test.ts
+  ● TS test file -> importing JS files
 
-Test Suites: 1 failed, 1 passed, 2 total
-Tests:       1 failed, 1 passed, 2 total
+    expect(received).toBeUndefined()
+
+    Received: "REAL C"
+
+      11 |
+      12 | test('TS test file -> importing JS files', () => {
+    > 13 |   expect(a()).toBeUndefined();
+         |               ^
+      14 | });
+      15 |
+
+      at Object.<anonymous>.test (plugins/apm/mock-fun/js/A.testy.test.ts:13:15)
+
+Test Suites: 2 failed, 2 passed, 4 total
+Tests:       2 failed, 2 passed, 4 total
 Snapshots:   0 total
-Time:        2.35s
+Time:        3.051s
 Ran all test suites matching /mock-fun/i.
 ```

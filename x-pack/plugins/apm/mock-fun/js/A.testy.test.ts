@@ -4,10 +4,11 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
+// @ts-ignore
 import { a } from './A';
 
 jest.mock('./C');
 
-test('A.ts', () => {
+test('TS test file -> importing JS files', () => {
   expect(a()).toBeUndefined();
 });
