@@ -19,7 +19,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import { Coordinate } from '../../../../../typings/timeseries';
 import { ITransactionChartData } from '../../../../store/selectors/chartSelectors';
-import { IUrlParams } from '../../../../store/urlParams';
+import { IUrlParams } from '../../../../context/UrlParamsContext/types';
 import { asInteger, asMillis, tpmUnit } from '../../../../utils/formatters';
 import { LicenseContext } from '../../../app/Main/LicenseCheck';
 import { MLJobLink } from '../../Links/MachineLearningLinks/MLJobLink';
