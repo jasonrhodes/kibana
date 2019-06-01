@@ -5,25 +5,12 @@
  */
 
 import React from 'react';
-import { EuiPanel, EuiTitle } from '@elastic/eui';
-
-const Home = () => (
-  <EuiPanel>
-    <EuiTitle>
-      <h2>Home</h2>
-    </EuiTitle>
-  </EuiPanel>
-);
-
-const ExampleOtherPage = () => (
-  <EuiPanel>
-    <EuiTitle>
-      <h2>Other Page</h2>
-    </EuiTitle>
-  </EuiPanel>
-);
+import { Route } from 'react-router-dom';
+import { APP } from '../common/constants';
+import { Detail } from './screens/Detail';
+import { Home } from './screens/Home';
 
 export const routes = [
-  { exact: true, path: '/', component: Home, breadcrumb: 'Home' },
-  { exact: true, path: '/example', component: ExampleOtherPage, breadcrumb: 'Example Other Page' },
+  <Route exact={true} path={APP.LIST_VIEW} component={Home} breadcrumb="Home" key="home" />,
+  <Route exact={true} path={APP.DETAIL_VIEW} component={Detail} breadcrumb="Detail" key="detail" />,
 ];

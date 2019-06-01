@@ -11,27 +11,18 @@ import 'ui/autoload/all';
 import 'ui/autoload/styles';
 import chrome from 'ui/chrome';
 import { I18nContext } from 'ui/i18n';
-import { HashRouter, Route, Switch } from 'react-router-dom';
-import { EuiPage, EuiTitle, EuiSpacer } from '@elastic/eui';
+import { HashRouter, Switch } from 'react-router-dom';
+import { EuiPage } from '@elastic/eui';
 import { routes } from './routes';
+import { ID } from '../common/constants';
 
-const REACT_APP_ROOT_ID = 'react-integrations_manager-root';
+const REACT_APP_ROOT_ID = `react-${ID}-root`;
 const template = `<div id="${REACT_APP_ROOT_ID}" class="integrationsManagerReactRoot"></div>`;
 
 function App() {
   return (
     <EuiPage style={{ flexWrap: 'wrap' }}>
-      <div style={{ width: '100%' }}>
-        <EuiTitle>
-          <h1>Elastic Integrations Manager</h1>
-        </EuiTitle>
-        <EuiSpacer />
-      </div>
-      <Switch>
-        {routes.map((route, i) => (
-          <Route key={i} {...route} />
-        ))}
-      </Switch>
+      <Switch>{routes}</Switch>
     </EuiPage>
   );
 }

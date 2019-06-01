@@ -9,11 +9,13 @@ import { Server } from 'hapi';
 import { resolve } from 'path';
 import { CoreSetup, PluginInitializerContext } from 'src/core/server/index.js';
 import { LegacyPluginInitializer } from 'src/legacy/types';
-import { plugin } from './server';
+import { Plugin } from './server';
+import { ID } from './common/constants';
 
-const ID = 'integrations_manager';
 const ICON = 'merge';
-const pluginTitle = i18n.translate('xpack.integrations_manager.pluginTitle', {
+const PREFIX = `xpack.${ID}`;
+const ROOT = `plugins/${ID}`;
+const pluginTitle = i18n.translate(`${PREFIX}.pluginTitle`, {
   defaultMessage: 'Integrations Manager',
 });
 
@@ -21,19 +23,19 @@ export const integrationsManager: LegacyPluginInitializer = kibana => {
   return new kibana.Plugin({
     require: ['kibana', 'elasticsearch', 'xpack_main'],
     id: ID,
-    configPrefix: 'xpack.integrations_manager',
+    configPrefix: PREFIX,
     publicDir: resolve(__dirname, 'public'),
 
     uiExports: {
       app: {
         title: pluginTitle,
         description: pluginTitle,
-        main: 'plugins/integrations_manager/index',
+        main: `${ROOT}/index`,
         euiIconType: ICON,
         order: 8100,
       },
       // This defines what shows up in the registry found at /app/kibana#/home and /app/kibana#/home/feature_directory
-      home: ['plugins/integrations_manager/register_feature'],
+      home: [`${ROOT}/register_feature`],
     },
 
     init(server: Server) {
@@ -41,7 +43,7 @@ export const integrationsManager: LegacyPluginInitializer = kibana => {
         id: ID,
         name: pluginTitle,
         icon: ICON,
-        navLinkId: pluginTitle,
+        navLinkId: ID,
         app: [ID, 'kibana'],
         catalogue: [ID],
         privileges: {
@@ -67,13 +69,13 @@ export const integrationsManager: LegacyPluginInitializer = kibana => {
       });
 
       // new Kibana platform shim starts here
-      const initializerContext = {} as PluginInitializerContext;
-      const core = {
+      const pluginSetup = {} as PluginInitializerContext;
+      const coreSetup = {
         http: {
           server,
         },
       } as CoreSetup;
-      plugin(initializerContext).setup(core);
+      new Plugin().setup(coreSetup, pluginSetup);
     },
   });
 };

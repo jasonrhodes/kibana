@@ -6,25 +6,11 @@
 
 import { PluginInitializerContext } from 'src/core/server';
 import { CoreSetup } from 'src/core/server';
+import { routes } from './routes';
 
-const IM_ROOT = '/api/integrations-manager';
-
-class Plugin {
-  public setup(core: CoreSetup) {
+export class Plugin {
+  public setup(core: CoreSetup, initializerContext: PluginInitializerContext) {
     const { server } = core.http;
-    server.route({
-      method: 'GET',
-      path: IM_ROOT,
-      options: {
-        tags: ['access:integrations_manager'],
-      },
-      handler: async req => {
-        return { message: 'INTEGRATIONS MANAGER WORKS' };
-      },
-    });
+    routes.forEach(route => server.route(route));
   }
-}
-
-export function plugin(initializerContext: PluginInitializerContext) {
-  return new Plugin();
 }
