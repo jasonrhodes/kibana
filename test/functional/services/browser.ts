@@ -52,7 +52,7 @@ export async function BrowserProvider({ getService }: FtrProviderContext) {
       });
   }
 
-  return new class BrowserService {
+  return new (class BrowserService {
     /**
      * Keyboard events
      */
@@ -80,6 +80,18 @@ export async function BrowserProvider({ getService }: FtrProviderContext) {
       return this.isW3CEnabled
         ? (driver as any).actions()
         : (driver as any).actions({ bridge: true });
+    }
+
+    /**
+     * Get handle for an alert, confirm, or prompt dialog. (if any).
+     * @return {Promise<void>}
+     */
+    public async getAlert() {
+      try {
+        return await driver.switchTo().alert();
+      } catch (e) {
+        return null;
+      }
     }
 
     /**
@@ -205,8 +217,8 @@ export async function BrowserProvider({ getService }: FtrProviderContext) {
      * @return {Promise<void>}
      */
     public async dragAndDrop(
-      from: { offset: { x: any; y: any }; location: { _webElement: any } },
-      to: { offset: { x: any; y: any }; location: { _webElement: any; x: any } }
+      from: { offset: { x: any; y: any }; location: any },
+      to: { offset: { x: any; y: any }; location: any }
     ) {
       // tslint:disable-next-line:variable-name
       let _from;
@@ -490,5 +502,5 @@ export async function BrowserProvider({ getService }: FtrProviderContext) {
       await driver.executeScript('document.body.scrollLeft = ' + scrollSize);
       return this.getScrollLeft();
     }
-  }();
+  })();
 }
