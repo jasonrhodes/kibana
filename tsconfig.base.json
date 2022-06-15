@@ -307,6 +307,8 @@
       "@kbn/encrypted-saved-objects-plugin/*": ["x-pack/plugins/encrypted_saved_objects/*"],
       "@kbn/enterprise-search-plugin": ["x-pack/plugins/enterprise_search"],
       "@kbn/enterprise-search-plugin/*": ["x-pack/plugins/enterprise_search/*"],
+      "@kbn/entities-plugin": ["x-pack/plugins/entities"],
+      "@kbn/entities-plugin/*": ["x-pack/plugins/entities/*"],
       "@kbn/event-log-plugin": ["x-pack/plugins/event_log"],
       "@kbn/event-log-plugin/*": ["x-pack/plugins/event_log/*"],
       "@kbn/features-plugin": ["x-pack/plugins/features"],
