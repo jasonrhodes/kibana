@@ -5,15 +5,89 @@
  * 2.0.
  */
 
-import { SearchRequest } from '@elastic/elasticsearch/lib/api/types';
-import { Asset } from '../../common/types_api';
+import { QueryDslQueryContainer, SearchRequest } from '@elastic/elasticsearch/lib/api/types';
+import { Asset, AssetFilters } from '../../common/types_api';
 import { esClient } from './es_client';
 
-export async function getAssets(): Promise<Asset[]> {
-  const query: SearchRequest = {
+interface GetAssetsOptions {
+  filters?: AssetFilters;
+}
+
+export async function getAssets({ filters = {} }: GetAssetsOptions = {}): Promise<Asset[]> {
+  const dsl: SearchRequest = {
     index: 'assets',
   };
 
-  const response = await esClient.search<{}>(query);
+  if (filters && Object.keys(filters).length > 0) {
+    const musts: QueryDslQueryContainer[] = [];
+
+    if (typeof filters.collectionVersion === 'number') {
+      musts.push({
+        term: {
+          ['asset.collection_version']: filters.collectionVersion,
+        },
+      });
+    }
+
+    if (filters.type) {
+      musts.push({
+        term: {
+          ['asset.type.keyword']: filters.type,
+        },
+      });
+    }
+
+    if (filters.kind) {
+      musts.push({
+        term: {
+          ['asset.kind.keyword']: filters.kind,
+        },
+      });
+    }
+
+    if (filters.ean) {
+      musts.push({
+        term: {
+          ['asset.ean.keyword']: filters.ean,
+        },
+      });
+    }
+
+    if (filters.id) {
+      musts.push({
+        term: {
+          ['asset.id.keyword']: filters.id,
+        },
+      });
+    }
+
+    if (filters.typeLike) {
+      musts.push({
+        wildcard: {
+          ['asset.type.keyword']: filters.typeLike,
+        },
+      });
+    }
+
+    if (filters.eanLike) {
+      musts.push({
+        wildcard: {
+          ['asset.ean.keyword']: filters.eanLike,
+        },
+      });
+    }
+
+    if (musts.length > 0) {
+      dsl.query = {
+        bool: {
+          must: musts,
+        },
+      };
+    }
+  }
+
+  // console.log('Performing Asset Query', '\n\n', JSON.stringify(dsl, null, 2));
+
+  const response = await esClient.search<{}>(dsl);
   return response.hits.hits.map((hit) => hit._source as Asset);
 }
