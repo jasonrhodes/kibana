@@ -18,6 +18,7 @@ import { EuiThemeProvider } from '@kbn/kibana-react-plugin/common';
 import { UsageCollectionSetup } from '@kbn/usage-collection-plugin/public';
 import { AssetInventoryPublicPluginsStart } from '../plugin';
 import { routes } from './routes';
+import { AssetFilterContextProvider } from '../hooks/asset_filters';
 
 function App() {
   return (
@@ -69,13 +70,15 @@ export function renderApp({
         <KibanaContextProvider
           services={{ ...core, ...plugins, storage: new Storage(localStorage), isDev }}
         >
-          <Router history={history}>
-            <EuiThemeProvider darkMode={isDarkMode}>
-              <i18nCore.Context>
-                <App />
-              </i18nCore.Context>
-            </EuiThemeProvider>
-          </Router>
+          <AssetFilterContextProvider>
+            <Router history={history}>
+              <EuiThemeProvider darkMode={isDarkMode}>
+                <i18nCore.Context>
+                  <App />
+                </i18nCore.Context>
+              </EuiThemeProvider>
+            </Router>
+          </AssetFilterContextProvider>
         </KibanaContextProvider>
       </KibanaThemeProvider>
     </ApplicationUsageTrackingProvider>,

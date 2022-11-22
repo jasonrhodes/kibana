@@ -10,6 +10,7 @@ export type AssetType = 'k8s.pod' | 'k8s.cluster' | 'k8s.node';
 
 export interface Asset {
   '@timestamp': string;
+  'asset.collection_version'?: string;
   'asset.ean': string;
   'asset.id': string;
   'asset.kind': AssetKind;
@@ -56,4 +57,14 @@ export interface EcsOrchestratorFieldset {
       type?: string;
     };
   };
+}
+
+export interface AssetFilters {
+  type?: AssetType;
+  kind?: AssetKind;
+  ean?: string;
+  id?: string;
+  typeLike?: string;
+  eanLike?: string;
+  collectionVersion?: number | 'latest' | 'all';
 }
