@@ -6,29 +6,36 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { EuiPageTemplate } from '@elastic/eui';
+import { EuiPageTemplate, EuiSpacer } from '@elastic/eui';
 import axios from 'axios';
-import { PageTemplate } from '../lib/page_template';
+import { PageTemplate } from '../components/page_template';
 import { Asset } from '../../common/types_api';
 import { AssetsTable } from '../components/assets_table';
+import { AssetFilterControls } from '../components/asset_filter_controls';
+import { useAssetFilters } from '../hooks/asset_filters';
 
 export function AssetInventoryListPage() {
   const [assets, setAssets] = useState<Asset[]>([]);
+  const { filtersQS } = useAssetFilters();
 
   useEffect(() => {
+    // console.log('Filters changed, new qs:', filtersQS);
+
     async function retrieve() {
-      const response = await axios.get('/local/api/asset-inventory');
+      const response = await axios.get(`/local/api/asset-inventory?${filtersQS}`);
       if (response.data && response.data.assets) {
         setAssets(response.data.assets);
       }
     }
     retrieve();
-  }, []);
+  }, [filtersQS]);
 
   return (
     <PageTemplate>
       <EuiPageTemplate.Header pageTitle="Asset Inventory List" />
       <EuiPageTemplate.Section>
+        <AssetFilterControls />
+        <EuiSpacer size="l" />
         <AssetsTable assets={assets} />
       </EuiPageTemplate.Section>
     </PageTemplate>
