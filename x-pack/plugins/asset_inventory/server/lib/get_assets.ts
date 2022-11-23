@@ -84,6 +84,16 @@ export async function getAssets({ filters = {} }: GetAssetsOptions = {}): Promis
         },
       };
     }
+
+    dsl.collapse = {
+      field: 'asset.ean.keyword',
+    };
+
+    dsl.sort = {
+      '@timestamp': {
+        order: 'desc',
+      },
+    };
   }
 
   // console.log('Performing Asset Query', '\n\n', JSON.stringify(dsl, null, 2));
