@@ -23,6 +23,28 @@ export interface Asset {
   orchestrator?: EcsOrchestratorFieldset;
 }
 
+export interface K8sPod {
+  id: string;
+  name: string;
+  ean: string;
+  node?: string;
+}
+
+export interface K8sNode {
+  id: string;
+  name: string;
+  ean: string;
+  pods?: K8sPod[];
+  cluster?: string;
+}
+
+export interface K8sCluster {
+  name: string;
+  nodes: K8sNode[];
+  status: string;
+  version: string;
+}
+
 export interface EcsKubernetesFieldset {
   namespace?: string;
   pod?: {
