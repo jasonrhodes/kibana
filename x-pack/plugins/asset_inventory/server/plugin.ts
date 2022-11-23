@@ -9,6 +9,8 @@ import { schema } from '@kbn/config-schema';
 import { Plugin, CoreSetup } from '@kbn/core/server';
 import { AssetFilters } from '../common/types_api';
 import { getAssets } from './lib/get_assets';
+import { getK8sCluster } from './lib/get_k8s_cluster';
+import { getK8sClusters } from './lib/get_k8s_clusters';
 import { getValuesForField } from './lib/get_values_for_field';
 
 export type AssetInventoryServerPluginSetup = ReturnType<AssetInventoryServerPlugin['setup']>;
@@ -67,6 +69,43 @@ export class AssetInventoryServerPlugin implements Plugin<AssetInventoryServerPl
             version: Number(version),
           });
           return res.ok({ body: { results } });
+        } catch (error: unknown) {
+          // console.log('error looking up field values', error);
+          return res.customError({ statusCode: 500 });
+        }
+      }
+    );
+
+    router.get(
+      {
+        path: '/api/asset-inventory/k8s/clusters',
+        validate: false,
+      },
+      async (context, req, res) => {
+        try {
+          const results = await getK8sClusters();
+          return res.ok({ body: { results } });
+        } catch (error: unknown) {
+          // console.log('error looking up field values', error);
+          return res.customError({ statusCode: 500 });
+        }
+      }
+    );
+
+    router.get<{ name: string }, {}, {}>(
+      {
+        path: '/api/asset-inventory/k8s/clusters/{name}',
+        validate: {
+          params: schema.object({
+            name: schema.string(),
+          }),
+        },
+      },
+      async (context, req, res) => {
+        const name = req.params.name;
+        try {
+          const result = await getK8sCluster(name);
+          return res.ok({ body: { result } });
         } catch (error: unknown) {
           // console.log('error looking up field values', error);
           return res.customError({ statusCode: 500 });

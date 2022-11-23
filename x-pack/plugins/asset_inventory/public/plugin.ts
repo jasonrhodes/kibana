@@ -83,8 +83,8 @@ export class Plugin
       id: 'assetInventory',
       mount,
       order: 8000,
-      title: i18n.translate('xpack.observability.overviewLinkTitle', {
-        defaultMessage: 'Overview',
+      title: i18n.translate('xpack.assetInventory.overviewTitle', {
+        defaultMessage: 'Asset Inventory',
       }),
       updater$: appUpdater$,
       keywords: [
