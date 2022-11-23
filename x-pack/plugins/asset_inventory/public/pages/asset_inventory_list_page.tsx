@@ -6,8 +6,9 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { EuiPageTemplate, EuiSpacer } from '@elastic/eui';
+import { EuiButton, EuiPageTemplate, EuiSpacer } from '@elastic/eui';
 import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 import { PageTemplate } from '../components/page_template';
 import { Asset } from '../../common/types_api';
 import { AssetsTable } from '../components/assets_table';
@@ -17,6 +18,7 @@ import { useAssetFilters } from '../hooks/asset_filters';
 export function AssetInventoryListPage() {
   const [assets, setAssets] = useState<Asset[]>([]);
   const { filtersQS } = useAssetFilters();
+  const history = useHistory();
 
   useEffect(() => {
     // console.log('Filters changed, new qs:', filtersQS);
@@ -32,7 +34,19 @@ export function AssetInventoryListPage() {
 
   return (
     <PageTemplate>
-      <EuiPageTemplate.Header pageTitle="Asset Inventory List" />
+      <EuiPageTemplate.Header
+        pageTitle="Asset Inventory List"
+        rightSideItems={[
+          <EuiButton
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+              e.preventDefault();
+              history.push('/k8s/clusters');
+            }}
+          >
+            K8s Clusters
+          </EuiButton>,
+        ]}
+      />
       <EuiPageTemplate.Section>
         <AssetFilterControls />
         <EuiSpacer size="l" />
