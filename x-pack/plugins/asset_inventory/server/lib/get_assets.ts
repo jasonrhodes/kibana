@@ -6,7 +6,9 @@
  */
 
 import { QueryDslQueryContainer, SearchRequest } from '@elastic/elasticsearch/lib/api/types';
+import { debug } from '../../common/debug_log';
 import { Asset, AssetFilters } from '../../common/types_api';
+import { ASSETS_INDEX } from '../constants';
 import { esClient } from './es_client';
 
 interface GetAssetsOptions {
@@ -15,7 +17,7 @@ interface GetAssetsOptions {
 
 export async function getAssets({ filters = {} }: GetAssetsOptions = {}): Promise<Asset[]> {
   const dsl: SearchRequest = {
-    index: 'assets',
+    index: ASSETS_INDEX,
   };
 
   if (filters && Object.keys(filters).length > 0) {
@@ -96,7 +98,7 @@ export async function getAssets({ filters = {} }: GetAssetsOptions = {}): Promis
     };
   }
 
-  // console.log('Performing Asset Query', '\n\n', JSON.stringify(dsl, null, 2));
+  debug('Performing Asset Query', '\n\n', JSON.stringify(dsl, null, 2));
 
   const response = await esClient.search<{}>(dsl);
   return response.hits.hits.map((hit) => hit._source as Asset);

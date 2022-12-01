@@ -7,6 +7,7 @@
 
 import { schema } from '@kbn/config-schema';
 import { Plugin, CoreSetup } from '@kbn/core/server';
+import { debug } from '../common/debug_log';
 import { AssetFilters } from '../common/types_api';
 import { getAssets } from './lib/get_assets';
 import { getK8sCluster } from './lib/get_k8s_cluster';
@@ -46,7 +47,7 @@ export class AssetInventoryServerPlugin implements Plugin<AssetInventoryServerPl
           const assets = await getAssets({ filters });
           return res.ok({ body: { assets } });
         } catch (error: unknown) {
-          // console.log('error looking up asset records', error);
+          debug('error looking up asset records', error);
           return res.customError({ statusCode: 500 });
         }
       }
@@ -70,7 +71,7 @@ export class AssetInventoryServerPlugin implements Plugin<AssetInventoryServerPl
           });
           return res.ok({ body: { results } });
         } catch (error: unknown) {
-          // console.log('error looking up field values', error);
+          debug('error looking up field values', error);
           return res.customError({ statusCode: 500 });
         }
       }
@@ -86,7 +87,7 @@ export class AssetInventoryServerPlugin implements Plugin<AssetInventoryServerPl
           const results = await getK8sClusters();
           return res.ok({ body: { results } });
         } catch (error: unknown) {
-          // console.log('error looking up field values', error);
+          debug('error looking up field values', error);
           return res.customError({ statusCode: 500 });
         }
       }
@@ -107,7 +108,7 @@ export class AssetInventoryServerPlugin implements Plugin<AssetInventoryServerPl
           const result = await getK8sCluster(name);
           return res.ok({ body: { result } });
         } catch (error: unknown) {
-          // console.log('error looking up field values', error);
+          debug('error looking up field values', error);
           return res.customError({ statusCode: 500 });
         }
       }

@@ -5,11 +5,13 @@
  * 2.0.
  */
 import { SearchRequest } from '@elastic/elasticsearch/lib/api/types';
+import { debug } from '../../common/debug_log';
+import { ASSETS_INDEX } from '../constants';
 import { esClient } from './es_client';
 
 export async function getLatestCollectionVersion() {
   const dsl: SearchRequest = {
-    index: 'assets',
+    index: ASSETS_INDEX,
     size: 0,
     aggregations: {
       maxVersion: {
@@ -20,7 +22,7 @@ export async function getLatestCollectionVersion() {
     },
   };
 
-  // console.log('Performing Latest Version Query', '\n\n', JSON.stringify(dsl, null, 2));
+  debug('Performing Latest Version Query', '\n\n', JSON.stringify(dsl, null, 2));
 
   const response = await esClient.search<unknown, { maxVersion: { value: number } }>(dsl);
   return response.aggregations?.maxVersion.value || 0;
