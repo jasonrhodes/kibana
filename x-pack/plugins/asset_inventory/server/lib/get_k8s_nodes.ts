@@ -6,7 +6,9 @@
  */
 
 import { SearchRequest } from '@elastic/elasticsearch/lib/api/types';
+import { debug } from '../../common/debug_log';
 import { K8sNode } from '../../common/types_api';
+import { ASSETS_INDEX } from '../constants';
 import { esClient } from './es_client';
 
 interface GetK8sNodesOptions {
@@ -15,7 +17,7 @@ interface GetK8sNodesOptions {
 
 export async function getK8sNodes({ clusterEan }: GetK8sNodesOptions = {}): Promise<K8sNode[]> {
   const dsl: SearchRequest = {
-    index: 'assets',
+    index: ASSETS_INDEX,
     query: {
       bool: {
         must: [
@@ -42,7 +44,7 @@ export async function getK8sNodes({ clusterEan }: GetK8sNodesOptions = {}): Prom
     },
   };
 
-  // console.log('Performing K8s Nodes Query', '\n\n', JSON.stringify(dsl, null, 2));
+  debug('Performing K8s Nodes Query', '\n\n', JSON.stringify(dsl, null, 2));
 
   const response = await esClient.search<{
     'asset.id': string;

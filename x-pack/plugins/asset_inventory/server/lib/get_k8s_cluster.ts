@@ -6,13 +6,15 @@
  */
 
 import { SearchRequest } from '@elastic/elasticsearch/lib/api/types';
+import { debug } from '../../common/debug_log';
 import { EcsOrchestratorFieldset, K8sCluster } from '../../common/types_api';
+import { ASSETS_INDEX } from '../constants';
 import { esClient } from './es_client';
 import { getK8sNodes } from './get_k8s_nodes';
 
 export async function getK8sCluster(name: string): Promise<K8sCluster> {
   const dsl: SearchRequest = {
-    index: 'assets',
+    index: ASSETS_INDEX,
     query: {
       bool: {
         must: [
@@ -39,7 +41,7 @@ export async function getK8sCluster(name: string): Promise<K8sCluster> {
     },
   };
 
-  // console.log('Performing K8s Clusters Query', '\n\n', JSON.stringify(dsl, null, 2));
+  debug('Performing K8s Clusters Query', '\n\n', JSON.stringify(dsl, null, 2));
 
   const response = await esClient.search<{
     'asset.name': string;

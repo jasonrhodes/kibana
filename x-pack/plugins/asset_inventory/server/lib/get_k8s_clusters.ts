@@ -6,13 +6,15 @@
  */
 
 import { SearchRequest } from '@elastic/elasticsearch/lib/api/types';
-import { EcsOrchestratorFieldset, K8sCluster } from '../../common/types_api';
+import { debug } from '../../common/debug_log';
+import { Asset, K8sCluster } from '../../common/types_api';
+import { ASSETS_INDEX } from '../constants';
 import { esClient } from './es_client';
 import { getK8sNodes } from './get_k8s_nodes';
 
 export async function getK8sClusters(): Promise<K8sCluster[]> {
   const dsl: SearchRequest = {
-    index: 'assets',
+    index: ASSETS_INDEX,
     query: {
       bool: {
         must: [
@@ -34,25 +36,23 @@ export async function getK8sClusters(): Promise<K8sCluster[]> {
     },
   };
 
-  // console.log('Performing K8s Clusters Query', '\n\n', JSON.stringify(dsl, null, 2));
+  debug('Performing K8s Clusters Query', '\n\n', JSON.stringify(dsl, null, 2));
 
-  const response = await esClient.search<{
-    'asset.name': string;
-    'asset.ean': string;
-    'asset.id': string;
-    orchestrator: EcsOrchestratorFieldset;
-  }>(dsl);
+  const response = await esClient.search<Asset>(dsl);
 
   const results = await Promise.all(
     response.hits.hits.map(async (hit) => {
       if (!hit._source) {
         throw new Error('Missing _source in cluster result');
       }
+      const doc = hit._source;
       return {
-        name: hit._source['asset.name'],
-        nodes: await getK8sNodes({ clusterEan: hit._source['asset.ean'] }),
-        status: 'Healthy',
-        version: hit._source?.orchestrator?.cluster?.version || 'Unspecified',
+        '@timestamp': doc['@timestamp'],
+        name: doc['asset.name'] || doc['asset.id'],
+        nodes: await getK8sNodes({ clusterEan: doc['asset.ean'] }),
+        status: doc['asset.status'] || 'UNKNOWN',
+        cloud: doc.cloud,
+        version: doc.orchestrator?.cluster?.version || 'Unspecified',
       };
     })
   );
