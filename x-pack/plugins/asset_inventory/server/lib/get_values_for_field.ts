@@ -6,7 +6,9 @@
  */
 
 import { SearchRequest } from '@elastic/elasticsearch/lib/api/types';
+import { debug } from '../../common/debug_log';
 import { Asset } from '../../common/types_api';
+import { ASSETS_INDEX } from '../constants';
 import { esClient } from './es_client';
 
 interface GetValuesForFieldOptions {
@@ -26,7 +28,7 @@ export async function getValuesForField({
   searchText,
 }: GetValuesForFieldOptions): Promise<AggBucket[]> {
   const dsl: SearchRequest = {
-    index: 'assets',
+    index: ASSETS_INDEX,
     size: 0,
     aggs: {
       field_values: {
@@ -52,7 +54,7 @@ export async function getValuesForField({
     };
   }
 
-  // console.log(`Performing Field Value Query for ${field}`, '\n\n', JSON.stringify(dsl, null, 2));
+  debug(`Performing Field Value Query for ${field}`, '\n\n', JSON.stringify(dsl, null, 2));
 
   const response = await esClient.search<{}, { field_values: { buckets: AggBucket[] } }>(dsl);
   return response.aggregations?.field_values.buckets || [];

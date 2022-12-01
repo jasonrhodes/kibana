@@ -1058,6 +1058,8 @@
       "@kbn/alerting-plugin/*": ["x-pack/plugins/alerting/*"],
       "@kbn/apm-plugin": ["x-pack/plugins/apm"],
       "@kbn/apm-plugin/*": ["x-pack/plugins/apm/*"],
+      "@kbn/asset-inventory-plugin": ["x-pack/plugins/asset_inventory"],
+      "@kbn/asset-inventory-plugin/*": ["x-pack/plugins/asset_inventory/*"],
       "@kbn/banners-plugin": ["x-pack/plugins/banners"],
       "@kbn/banners-plugin/*": ["x-pack/plugins/banners/*"],
       "@kbn/canvas-plugin": ["x-pack/plugins/canvas"],

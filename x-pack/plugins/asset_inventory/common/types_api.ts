@@ -8,29 +8,36 @@
 export type AssetKind = 'unknown' | 'node';
 export type AssetType = 'k8s.pod' | 'k8s.cluster' | 'k8s.node';
 
-export interface Asset {
+export interface ECSDocument {
   '@timestamp': string;
+  kubernetes?: EcsKubernetesFieldset;
+  orchestrator?: EcsOrchestratorFieldset;
+  cloud?: EcsCloudFieldset;
+}
+
+export type AssetStatus = 'CREATING' | 'ACTIVE' | 'DELETING' | 'FAILED' | 'UPDATING' | 'PENDING';
+
+export interface Asset extends ECSDocument {
   'asset.collection_version'?: string;
   'asset.ean': string;
   'asset.id': string;
   'asset.kind': AssetKind;
   'asset.name'?: string;
   'asset.type': AssetType;
+  'asset.status'?: AssetStatus;
   'asset.parents'?: string | string[];
   'asset.children'?: string | string[];
   'asset.namespace'?: string;
-  kubernetes?: EcsKubernetesFieldset;
-  orchestrator?: EcsOrchestratorFieldset;
 }
 
-export interface K8sPod {
+export interface K8sPod extends ECSDocument {
   id: string;
   name: string;
   ean: string;
   node?: string;
 }
 
-export interface K8sNode {
+export interface K8sNode extends ECSDocument {
   id: string;
   name: string;
   ean: string;
@@ -38,7 +45,7 @@ export interface K8sNode {
   cluster?: string;
 }
 
-export interface K8sCluster {
+export interface K8sCluster extends ECSDocument {
   name: string;
   nodes: K8sNode[];
   status: string;
@@ -78,6 +85,16 @@ export interface EcsOrchestratorFieldset {
     parent?: {
       type?: string;
     };
+  };
+}
+
+export type CloudProviderName = 'aws' | 'gcp' | 'azure' | 'other' | 'unknown' | 'none';
+
+export interface EcsCloudFieldset {
+  provider: CloudProviderName;
+  region?: string;
+  service?: {
+    name?: string;
   };
 }
 
