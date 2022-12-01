@@ -64,6 +64,8 @@
       "@kbn/app-link-test-plugin/*": ["test/plugin_functional/plugins/app_link_test/*"],
       "@kbn/application-usage-test-plugin": ["x-pack/test/usage_collection/plugins/application_usage_test"],
       "@kbn/application-usage-test-plugin/*": ["x-pack/test/usage_collection/plugins/application_usage_test/*"],
+      "@kbn/asset-inventory-plugin": ["x-pack/plugins/asset_inventory"],
+      "@kbn/asset-inventory-plugin/*": ["x-pack/plugins/asset_inventory/*"],
       "@kbn/axe-config": ["packages/kbn-axe-config"],
       "@kbn/axe-config/*": ["packages/kbn-axe-config/*"],
       "@kbn/babel-plugin-package-imports": ["packages/kbn-babel-plugin-package-imports"],
@@ -1343,5 +1345,5 @@
       "@kbn/ambient-common-types",
       "@kbn/ambient-storybook-types"
     ]
-  },
+  }
 }

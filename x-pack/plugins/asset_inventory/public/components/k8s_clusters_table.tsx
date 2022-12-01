@@ -5,10 +5,29 @@
  * 2.0.
  */
 
-import { EuiInMemoryTable } from '@elastic/eui';
+import { EuiHealth, EuiIcon, EuiInMemoryTable } from '@elastic/eui';
+import { capitalize } from 'lodash';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { K8sCluster, K8sNode } from '../../common/types_api';
+import { AssetStatus, CloudProviderName, K8sCluster, K8sNode } from '../../common/types_api';
+
+const cloudIconMap: Record<CloudProviderName, string> = {
+  gcp: 'logoGCP',
+  aws: 'logoAWS',
+  azure: 'logoAzure',
+  other: 'questionInCircle',
+  unknown: 'questionInCircle',
+  none: 'crossInACircleFilled',
+};
+
+const statusMap: Record<AssetStatus, string> = {
+  ACTIVE: 'success',
+  CREATING: 'subdued',
+  DELETING: 'subdued',
+  FAILED: 'danger',
+  UPDATING: 'subdued',
+  PENDING: 'warning',
+};
 
 export function K8sClustersTable({ clusters }: { clusters: K8sCluster[] }) {
   const columns = [
@@ -24,11 +43,21 @@ export function K8sClustersTable({ clusters }: { clusters: K8sCluster[] }) {
     {
       field: 'status',
       name: 'Status',
+      render: (status: AssetStatus) => (
+        <EuiHealth color={statusMap[status]}>{capitalize(status)}</EuiHealth>
+      ),
     },
     {
-      field: 'name',
+      field: 'cloud',
       name: 'Provider',
-      render: () => <>GCP</>,
+      render: (cloud: K8sCluster['cloud']) => (
+        <EuiIcon size="xl" type={cloudIconMap[cloud?.provider || 'unknown']} />
+      ),
+    },
+    {
+      field: 'cloud',
+      name: 'Region',
+      render: (cloud: K8sCluster['cloud']) => cloud?.region || 'unknown',
     },
     {
       field: 'version',
