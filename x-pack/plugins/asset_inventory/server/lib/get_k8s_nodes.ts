@@ -23,19 +23,19 @@ export async function getK8sNodes({ clusterEan }: GetK8sNodesOptions = {}): Prom
         must: [
           {
             term: {
-              ['asset.type.keyword']: 'k8s.node',
+              ['asset.type']: 'k8s.node',
             },
           },
           {
             term: {
-              'asset.parents.keyword': clusterEan,
+              'asset.parents': clusterEan,
             },
           },
         ],
       },
     },
     collapse: {
-      field: 'asset.ean.keyword',
+      field: 'asset.ean',
     },
     sort: {
       '@timestamp': {
@@ -47,6 +47,7 @@ export async function getK8sNodes({ clusterEan }: GetK8sNodesOptions = {}): Prom
   debug('Performing K8s Nodes Query', '\n\n', JSON.stringify(dsl, null, 2));
 
   const response = await esClient.search<{
+    '@timestamp': string;
     'asset.id': string;
     'asset.name': string;
     'asset.ean': string;
@@ -59,6 +60,7 @@ export async function getK8sNodes({ clusterEan }: GetK8sNodesOptions = {}): Prom
       }
       const s = hit._source;
       return {
+        '@timestamp': s['@timestamp'],
         id: s['asset.id'],
         name: s['asset.name'],
         ean: s['asset.ean'],
