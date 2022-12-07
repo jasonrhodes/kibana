@@ -20,14 +20,14 @@ export async function getK8sClusters(): Promise<K8sCluster[]> {
         must: [
           {
             term: {
-              ['asset.type.keyword']: 'k8s.cluster',
+              ['asset.type']: 'k8s.cluster',
             },
           },
         ],
       },
     },
     collapse: {
-      field: 'asset.ean.keyword',
+      field: 'asset.ean',
     },
     sort: {
       '@timestamp': {
