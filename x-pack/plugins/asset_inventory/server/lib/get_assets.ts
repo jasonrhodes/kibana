@@ -34,7 +34,7 @@ export async function getAssets({ filters = {} }: GetAssetsOptions = {}): Promis
     if (filters.type) {
       musts.push({
         term: {
-          ['asset.type.keyword']: filters.type,
+          ['asset.type']: filters.type,
         },
       });
     }
@@ -42,7 +42,7 @@ export async function getAssets({ filters = {} }: GetAssetsOptions = {}): Promis
     if (filters.kind) {
       musts.push({
         term: {
-          ['asset.kind.keyword']: filters.kind,
+          ['asset.kind']: filters.kind,
         },
       });
     }
@@ -50,7 +50,7 @@ export async function getAssets({ filters = {} }: GetAssetsOptions = {}): Promis
     if (filters.ean) {
       musts.push({
         term: {
-          ['asset.ean.keyword']: filters.ean,
+          ['asset.ean']: filters.ean,
         },
       });
     }
@@ -58,7 +58,7 @@ export async function getAssets({ filters = {} }: GetAssetsOptions = {}): Promis
     if (filters.id) {
       musts.push({
         term: {
-          ['asset.id.keyword']: filters.id,
+          ['asset.id']: filters.id,
         },
       });
     }
@@ -66,7 +66,7 @@ export async function getAssets({ filters = {} }: GetAssetsOptions = {}): Promis
     if (filters.typeLike) {
       musts.push({
         wildcard: {
-          ['asset.type.keyword']: filters.typeLike,
+          ['asset.type']: filters.typeLike,
         },
       });
     }
@@ -74,7 +74,7 @@ export async function getAssets({ filters = {} }: GetAssetsOptions = {}): Promis
     if (filters.eanLike) {
       musts.push({
         wildcard: {
-          ['asset.ean.keyword']: filters.eanLike,
+          ['asset.ean']: filters.eanLike,
         },
       });
     }
@@ -88,7 +88,7 @@ export async function getAssets({ filters = {} }: GetAssetsOptions = {}): Promis
     }
 
     dsl.collapse = {
-      field: 'asset.ean.keyword',
+      field: 'asset.ean',
     };
 
     dsl.sort = {

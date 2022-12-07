@@ -20,19 +20,19 @@ export async function getK8sCluster(name: string): Promise<K8sCluster> {
         must: [
           {
             term: {
-              ['asset.name.keyword']: name,
+              ['asset.name']: name,
             },
           },
           {
             term: {
-              ['asset.type.keyword']: 'k8s.cluster',
+              ['asset.type']: 'k8s.cluster',
             },
           },
         ],
       },
     },
     collapse: {
-      field: 'asset.ean.keyword',
+      field: 'asset.ean',
     },
     sort: {
       '@timestamp': {
@@ -44,6 +44,7 @@ export async function getK8sCluster(name: string): Promise<K8sCluster> {
   debug('Performing K8s Clusters Query', '\n\n', JSON.stringify(dsl, null, 2));
 
   const response = await esClient.search<{
+    '@timestamp': string;
     'asset.name': string;
     'asset.ean': string;
     'asset.id': string;
@@ -57,6 +58,7 @@ export async function getK8sCluster(name: string): Promise<K8sCluster> {
   const nodes = await getK8sNodes({ clusterEan: cluster['asset.ean'] });
 
   return {
+    '@timestamp': cluster['@timestamp'],
     name: cluster['asset.name'],
     nodes,
     status: 'Healthy',
