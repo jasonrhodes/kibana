@@ -16,7 +16,7 @@ export function AssetFilterControls() {
         <EuiFlexItem>
           <AssetFilterAutocomplete
             label="Kind"
-            field="asset.kind.keyword"
+            field="asset.kind"
             filtersKey="kind"
             placeholder="All kinds"
           />
@@ -24,7 +24,7 @@ export function AssetFilterControls() {
         <EuiFlexItem>
           <AssetFilterAutocomplete
             label="Type"
-            field="asset.type.keyword"
+            field="asset.type"
             filtersKey="type"
             placeholder="All types"
           />
@@ -42,7 +42,7 @@ export function AssetFilterControls() {
         <EuiFlexItem css={{ minWidth: '50%' }}>
           <AssetFilterAutocomplete
             label="EAN"
-            field="asset.ean.keyword"
+            field="asset.ean"
             filtersKey="ean"
             placeholder="Filter by EAN"
             fullWidth={true}
@@ -51,7 +51,7 @@ export function AssetFilterControls() {
         <EuiFlexItem>
           <AssetFilterAutocomplete
             label="Original ID"
-            field="asset.id.keyword"
+            field="asset.id"
             filtersKey="id"
             placeholder="Filter by original ID"
             fullWidth={true}
