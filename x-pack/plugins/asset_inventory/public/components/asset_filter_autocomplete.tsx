@@ -10,6 +10,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { AssetFilters } from '../../common/types_api';
 import { useAssetFilters } from '../hooks/asset_filters';
+import { useKibanaUrl } from '../hooks/use_kibana_url';
 
 interface AutocompleteOptions {
   field: string;
@@ -37,6 +38,7 @@ export function AssetFilterAutocomplete({
   const [selected, setSelected] = useState<EuiComboBoxOptionOption[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { filters, setFilters } = useAssetFilters();
+  const apiBaseUrl = useKibanaUrl('/api/asset-inventory/field-values');
 
   const { collectionVersion } = filters;
 
@@ -44,9 +46,7 @@ export function AssetFilterAutocomplete({
     async function retrieve() {
       setIsLoading(true);
       const response = await axios.get<{ results: FieldValueResult[] }>(
-        `/local/api/asset-inventory/field-values?field=${field}&version=${
-          collectionVersion || 'all'
-        }`
+        `${apiBaseUrl}?field=${field}&version=${collectionVersion || 'all'}`
       );
 
       if (response.data.results) {
@@ -60,7 +60,7 @@ export function AssetFilterAutocomplete({
     }
 
     retrieve();
-  }, [field, collectionVersion]);
+  }, [field, collectionVersion, apiBaseUrl]);
 
   useEffect(() => {
     const selectedValues = selected.map((option) => option.value);
