@@ -14,23 +14,24 @@ import { Asset } from '../../common/types_api';
 import { AssetsTable } from '../components/assets_table';
 import { AssetFilterControls } from '../components/asset_filter_controls';
 import { useAssetFilters } from '../hooks/asset_filters';
+import { useKibanaUrl } from '../hooks/use_kibana_url';
 
 export function AssetInventoryListPage() {
   const [assets, setAssets] = useState<Asset[]>([]);
   const { filtersQS } = useAssetFilters();
   const history = useHistory();
+  const apiBaseUrl = useKibanaUrl('/api/asset-inventory');
 
   useEffect(() => {
-    // console.log('Filters changed, new qs:', filtersQS);
-
     async function retrieve() {
-      const response = await axios.get(`/local/api/asset-inventory?${filtersQS}`);
+      const path = `${apiBaseUrl}?${filtersQS}`;
+      const response = await axios.get(path);
       if (response.data && response.data.assets) {
         setAssets(response.data.assets);
       }
     }
     retrieve();
-  }, [filtersQS]);
+  }, [filtersQS, apiBaseUrl]);
 
   return (
     <PageTemplate>

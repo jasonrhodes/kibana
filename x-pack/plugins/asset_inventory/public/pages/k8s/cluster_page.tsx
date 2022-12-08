@@ -12,23 +12,25 @@ import { useHistory, useParams } from 'react-router-dom';
 import { K8sCluster } from '../../../common/types_api';
 import { PageTemplate } from '../../components/page_template';
 import { K8sClusterInfo } from '../../components/k8s_cluster_info';
+import { useKibanaUrl } from '../../hooks/use_kibana_url';
 
 export function K8sClusterPage() {
   const [cluster, setCluster] = useState<K8sCluster | null>(null);
   const { name } = useParams<{ name: string }>();
   const history = useHistory();
+  const apiBaseUrl = useKibanaUrl('/api/asset-inventory/k8s/clusters');
 
   useEffect(() => {
     async function retrieve() {
       const response = await axios.get<any, { data?: { result?: K8sCluster } }>(
-        `/local/api/asset-inventory/k8s/clusters/${name}`
+        `${apiBaseUrl}/${name}`
       );
       if (response.data && response.data?.result) {
         setCluster(response.data.result);
       }
     }
     retrieve();
-  }, [name]);
+  }, [name, apiBaseUrl]);
 
   if (cluster === null) {
     return null;
