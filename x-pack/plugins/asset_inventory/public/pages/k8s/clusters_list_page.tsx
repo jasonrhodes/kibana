@@ -5,8 +5,8 @@
  * 2.0.
  */
 
-import React, { useEffect, useState } from 'react';
-import { EuiButton, EuiPageTemplate } from '@elastic/eui';
+import React, { useCallback, useEffect, useState } from 'react';
+import { EuiButton, EuiLoadingSpinner, EuiPageTemplate } from '@elastic/eui';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { K8sCluster } from '../../../common/types_api';
@@ -16,17 +16,38 @@ import { useKibanaUrl } from '../../hooks/use_kibana_url';
 
 export function K8sClustersListPage() {
   const [clusters, setClusters] = useState<K8sCluster[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isCollecting, setIsCollecting] = useState<boolean>(false);
   const history = useHistory();
-  const apiBaseUrl = useKibanaUrl('/api/asset-inventory/k8s/clusters');
+  const apiBaseUrl = useKibanaUrl('/api/asset-inventory');
 
   useEffect(() => {
     async function retrieve() {
-      const response = await axios.get<any, { data?: { results?: K8sCluster[] } }>(apiBaseUrl);
+      if (isCollecting) {
+        return;
+      }
+      setIsLoading(true);
+      const response = await axios.get<any, { data?: { results?: K8sCluster[] } }>(
+        apiBaseUrl + '/k8s/clusters'
+      );
       if (response.data && response.data?.results) {
         setClusters(response.data.results);
       }
+      setIsLoading(false);
     }
     retrieve();
+  }, [apiBaseUrl, isCollecting]);
+
+  const handleLoadAssets = useCallback(async () => {
+    setIsCollecting(true);
+    const response = await axios.post(
+      apiBaseUrl + '/collect',
+      { types: 'all' },
+      {
+        headers: { 'kbn-xsrf': 'abcdefghijkl' },
+      }
+    );
+    setIsCollecting(false);
   }, [apiBaseUrl]);
 
   return (
@@ -34,6 +55,15 @@ export function K8sClustersListPage() {
       <EuiPageTemplate.Header
         pageTitle="Kubernetes inventory"
         rightSideItems={[
+          <EuiButton onClick={handleLoadAssets} disabled={isCollecting}>
+            {isCollecting ? (
+              <>
+                Collecting... <EuiLoadingSpinner />
+              </>
+            ) : (
+              'Collect Kubernetes Asset Data'
+            )}
+          </EuiButton>,
           <EuiButton
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.preventDefault();
@@ -45,7 +75,7 @@ export function K8sClustersListPage() {
         ]}
       />
       <EuiPageTemplate.Section>
-        <K8sClustersTable clusters={clusters} />
+        <K8sClustersTable isLoading={isLoading} clusters={clusters} />
       </EuiPageTemplate.Section>
     </PageTemplate>
   );
