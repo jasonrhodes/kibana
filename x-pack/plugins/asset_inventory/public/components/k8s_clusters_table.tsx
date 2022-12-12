@@ -29,7 +29,13 @@ const statusMap: Record<AssetStatus, string> = {
   PENDING: 'warning',
 };
 
-export function K8sClustersTable({ clusters }: { clusters: K8sCluster[] }) {
+export function K8sClustersTable({
+  isLoading,
+  clusters,
+}: {
+  isLoading: boolean;
+  clusters: K8sCluster[];
+}) {
   const columns = [
     {
       field: 'name',
@@ -71,5 +77,5 @@ export function K8sClustersTable({ clusters }: { clusters: K8sCluster[] }) {
   ];
 
   // @ts-ignore
-  return <EuiInMemoryTable columns={columns} items={clusters} />;
+  return <EuiInMemoryTable loading={isLoading} columns={columns} items={clusters} />;
 }
