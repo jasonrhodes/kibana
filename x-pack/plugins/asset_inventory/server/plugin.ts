@@ -115,21 +115,32 @@ export class AssetInventoryServerPlugin implements Plugin<AssetInventoryServerPl
       }
     );
 
-    router.post<{}, {}, { types?: string } | null>(
+    router.post<{}, {}, { types?: string[] } | null>(
       {
         path: '/api/asset-inventory/collect',
         validate: {
           body: schema.nullable(
             schema.object({
-              types: schema.maybe(schema.string()),
+              types: schema.maybe(schema.arrayOf(schema.string())),
             })
           ),
         },
       },
       async (context, req, res) => {
-        const { types = 'all' } = req.body || {};
-        const results = await collectAssets({ types: types.split(',') });
-        return res.ok({ body: { results } });
+        const { types = ['all'] } = req.body || {};
+        try {
+          const results = await collectAssets({ types });
+          return res.ok({ body: { results } });
+        } catch (error: any) {
+          debug('error collecting assets', error);
+          return res.customError({
+            statusCode: 500,
+            body: {
+              message:
+                error?.message || error || 'Unknown error occurred while collecting asset data',
+            },
+          });
+        }
       }
     );
 
