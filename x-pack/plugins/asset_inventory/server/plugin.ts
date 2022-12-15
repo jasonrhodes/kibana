@@ -9,6 +9,7 @@ import { schema } from '@kbn/config-schema';
 import { Plugin, CoreSetup } from '@kbn/core/server';
 import { debug } from '../common/debug_log';
 import { AssetFilters } from '../common/types_api';
+import { collectAssets } from './lib/collect_assets';
 import { getAssets } from './lib/get_assets';
 import { getK8sCluster } from './lib/get_k8s_cluster';
 import { getK8sClusters } from './lib/get_k8s_clusters';
@@ -111,6 +112,24 @@ export class AssetInventoryServerPlugin implements Plugin<AssetInventoryServerPl
           debug('error looking up field values', error);
           return res.customError({ statusCode: 500 });
         }
+      }
+    );
+
+    router.post<{}, {}, { types?: string } | null>(
+      {
+        path: '/api/asset-inventory/collect',
+        validate: {
+          body: schema.nullable(
+            schema.object({
+              types: schema.maybe(schema.string()),
+            })
+          ),
+        },
+      },
+      async (context, req, res) => {
+        const { types = 'all' } = req.body || {};
+        const results = await collectAssets({ types: types.split(',') });
+        return res.ok({ body: { results } });
       }
     );
 
