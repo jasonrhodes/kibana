@@ -25,26 +25,19 @@ export function K8sClustersListPage() {
   const apiBaseUrl = useKibanaUrl('/api/asset-inventory');
 
   useEffect(() => {
-    const id = Math.round(new Date().getTime() * Math.random());
     async function retrieve() {
-      console.log('retrieve start', id);
       if (isCollecting) {
-        console.log('collecting, bail', id);
         return;
       }
-      console.log('set is loading true', id);
       setIsLoading(true);
       const response = await axios.get<any, { data?: { results?: K8sCluster[] } }>(
         apiBaseUrl + '/k8s/clusters'
       );
-      console.log('response came back', id);
       if (response.data && response.data?.results) {
         setClusters(response.data.results);
       }
-      console.log('set loading false', id);
       setIsLoading(false);
     }
-    console.log('calling retrieve function', id);
     retrieve();
   }, [apiBaseUrl, isCollecting]);
 
@@ -61,8 +54,9 @@ export function K8sClustersListPage() {
       );
       setCollectionResponse(results.data);
     } catch (error: any) {
+      const message = error?.response?.data?.message || error?.message;
       setCollectionError(
-        error?.message || error || 'Unknown error occurred while collecting asset data'
+        typeof message === 'string' ? message : 'Unknown error occurred while collecting asset data'
       );
     }
     setIsCollecting(false);
@@ -97,7 +91,7 @@ export function K8sClustersListPage() {
           isCollecting={isCollecting}
           response={collectionResponse}
           error={collectionError}
-          timeoutMs={5000}
+          timeoutMs={10000}
         />
         <K8sClustersTable isLoading={isLoading} clusters={clusters} />
       </EuiPageTemplate.Section>
@@ -123,7 +117,7 @@ function CollectionMessage({ isCollecting, response, error, timeoutMs }: Collect
     setShow(true);
     const t = setTimeout(() => setShow(false), timeoutMs);
     setShowTimeout(t);
-  }, [isCollecting, response, error]);
+  }, [isCollecting, response, error, showTimeout, timeoutMs]);
 
   if (!show) {
     return null;
@@ -134,7 +128,11 @@ function CollectionMessage({ isCollecting, response, error, timeoutMs }: Collect
   }
 
   if (error) {
-    return <EuiCallOut title="Collection Failed" color="danger" />;
+    return (
+      <EuiCallOut title="Collection Failed" color="danger">
+        {error}
+      </EuiCallOut>
+    );
   }
 
   if (response) {
