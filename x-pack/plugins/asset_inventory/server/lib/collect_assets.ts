@@ -23,7 +23,12 @@ export async function collectAssets({ types }: { types: string[] }) {
   };
 
   if (doAll || types.includes('aws-k8s')) {
-    results.push(loadAwsK8s(ES_CONFIG));
+    if (!process.env.ASSETS_AWS_REGIONS) {
+      throw new Error(
+        'Cannot collect AWS K8s assets without specifying one or more valid AWS regions, provided as ASSETS_AWS_REGIONS=us-east-1,us-east2'
+      );
+    }
+    results.push(await loadAwsK8s(ES_CONFIG, { region: ['us-east-1', 'us-east-2'] }));
   }
 
   if (doAll || types.includes('azure-k8s')) {
@@ -32,12 +37,12 @@ export async function collectAssets({ types }: { types: string[] }) {
         'Cannot collect Azure K8s assets without a valid Azure Subscription ID provided as ASSETS_AZURE_SUBSCRIPTION_ID'
       );
     }
-    results.push(loadAzureK8s(ES_CONFIG, process.env.ASSETS_AZURE_SUBSCRIPTION_ID));
+    results.push(await loadAzureK8s(ES_CONFIG, process.env.ASSETS_AZURE_SUBSCRIPTION_ID));
   }
 
-  if (doAll || types.includes('')) {
-    results.push(loadK8sAssets(ES_CONFIG));
+  if (doAll || types.includes('k8s-api')) {
+    results.push(await loadK8sAssets(ES_CONFIG));
   }
 
-  return await Promise.all(results);
+  return results;
 }
