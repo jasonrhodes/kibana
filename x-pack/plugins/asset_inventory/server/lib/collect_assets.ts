@@ -28,7 +28,9 @@ export async function collectAssets({ types }: { types: string[] }) {
         'Cannot collect AWS K8s assets without specifying one or more valid AWS regions, provided as ASSETS_AWS_REGIONS=us-east-1,us-east2'
       );
     }
-    results.push(await loadAwsK8s(ES_CONFIG, { region: ['us-east-1', 'us-east-2'] }));
+    results.push(
+      await loadAwsK8s(ES_CONFIG, { region: process.env.ASSETS_AWS_REGIONS.split(',') })
+    );
   }
 
   if (doAll || types.includes('azure-k8s')) {
