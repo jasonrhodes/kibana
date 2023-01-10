@@ -2318,10 +2318,10 @@
   dependencies:
     object-hash "^1.3.0"
 
-"@elastic/asset-collection@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@elastic/asset-collection/-/asset-collection-0.4.0.tgz#fbdb85a0bfdc400961072e7efddd50eb9320d86d"
-  integrity sha512-e4R9bJal03H6K9wM3pp3hCvCrC7PMAv3845EU+TNthCUdo7dl7CWLLoewOrh/VX/HffbBviji/YZG+nH2b+JYA==
+"@elastic/asset-collection@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.npmjs.org/@elastic/asset-collection/-/asset-collection-0.5.0.tgz#a7df0c9bbc4e2fe349d472d89d835ea8ad3138f6"
+  integrity sha512-K9pL0C8tzeZ4jNhQn2BZ00r6pQ3pcjHRgTY9J3ak1xG3sTmtXm3OAdg0qRnAvE/YmKB9ZPQraG+R4Du2S1AYZg==
   dependencies:
     "@aws-sdk/client-eks" "^3.218.0"
     "@azure/arm-containerservice" "^17.2.0"
