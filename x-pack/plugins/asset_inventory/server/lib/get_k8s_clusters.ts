@@ -51,8 +51,11 @@ export async function getK8sClusters(): Promise<K8sCluster[]> {
         name: doc['asset.name'] || doc['asset.id'],
         nodes: await getK8sNodes({ clusterEan: doc['asset.ean'] }),
         status: doc['asset.status'] || 'UNKNOWN',
-        cloud: doc.cloud,
-        version: doc.orchestrator?.cluster?.version || 'Unspecified',
+        cloud: {
+          provider: doc['cloud.provider'],
+          region: doc['cloud.region'],
+        },
+        version: doc['orchestrator.cluster.version'],
       };
     })
   );

@@ -6,7 +6,7 @@
  */
 
 import React, { useCallback, useEffect, useState } from 'react';
-import { EuiButton, EuiCallOut, EuiLoadingSpinner, EuiPageTemplate } from '@elastic/eui';
+import { EuiButton, EuiCallOut, EuiLoadingSpinner, EuiPageTemplate, EuiSpacer } from '@elastic/eui';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { LoadResults } from '@elastic/asset-collection/dist/lib/shared/types';
@@ -107,37 +107,27 @@ interface CollectionMessageProps {
 }
 
 function CollectionMessage({ isCollecting, response, error, timeoutMs }: CollectionMessageProps) {
-  const [show, setShow] = useState<boolean>(false);
-  const [showTimeout, setShowTimeout] = useState<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    if (showTimeout) {
-      clearTimeout(showTimeout);
-    }
-    setShow(true);
-    const t = setTimeout(() => setShow(false), timeoutMs);
-    setShowTimeout(t);
-  }, [isCollecting, response, error, showTimeout, timeoutMs]);
-
-  if (!show) {
-    return null;
-  }
-
   if (isCollecting) {
     return null;
   }
 
   if (error) {
     return (
-      <EuiCallOut title="Collection Failed" color="danger">
-        {error}
-      </EuiCallOut>
+      <>
+        <EuiCallOut title="Collection Failed" color="danger">
+          {error}
+        </EuiCallOut>
+        <EuiSpacer />
+      </>
     );
   }
 
   if (response) {
     return (
-      <EuiCallOut title="Collection Succeeded" color="success" iconType="checkInCircleFilled" />
+      <>
+        <EuiCallOut title="Collection Succeeded" color="success" iconType="checkInCircleFilled" />
+        <EuiSpacer />
+      </>
     );
   }
 

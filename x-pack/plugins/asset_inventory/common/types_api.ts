@@ -7,15 +7,32 @@
 
 export type AssetKind = 'unknown' | 'node';
 export type AssetType = 'k8s.pod' | 'k8s.cluster' | 'k8s.node';
+export type AssetStatus = 'CREATING' | 'ACTIVE' | 'DELETING' | 'FAILED' | 'UPDATING' | 'PENDING';
+export type CloudProviderName = 'aws' | 'gcp' | 'azure' | 'other' | 'unknown' | 'none';
 
 export interface ECSDocument {
   '@timestamp': string;
-  kubernetes?: EcsKubernetesFieldset;
-  orchestrator?: EcsOrchestratorFieldset;
-  cloud?: EcsCloudFieldset;
-}
 
-export type AssetStatus = 'CREATING' | 'ACTIVE' | 'DELETING' | 'FAILED' | 'UPDATING' | 'PENDING';
+  'kubernetes.namespace'?: string;
+  'kubernetes.pod.name'?: string;
+  'kubernetes.pod.uid'?: string;
+  'kubernetes.pod.start_time'?: Date;
+  'kubernetes.node.name'?: string;
+  'kubernetes.node.start_time'?: Date;
+
+  'orchestrator.api_version'?: string;
+  'orchestrator.namespace'?: string;
+  'orchestrator.organization'?: string;
+  'orchestrator.type'?: string;
+  'orchestrator.cluster.id'?: string;
+  'orchestrator.cluster.name'?: string;
+  'orchestrator.cluster.url'?: string;
+  'orchestrator.cluster.version'?: string;
+
+  'cloud.provider'?: CloudProviderName;
+  'cloud.region'?: string;
+  'cloud.service.name'?: string;
+}
 
 export interface Asset extends ECSDocument {
   'asset.collection_version'?: string;
@@ -49,52 +66,10 @@ export interface K8sCluster extends ECSDocument {
   name: string;
   nodes: K8sNode[];
   status: string;
-  version: string;
-}
-
-export interface EcsKubernetesFieldset {
-  namespace?: string;
-  pod?: {
-    name: string;
-    uid: string;
-    start_time?: Date;
-  };
-  node?: {
-    name: string;
-    start_time?: Date;
-  };
-}
-
-// See: https://www.elastic.co/guide/en/ecs/current/ecs-orchestrator.html
-export interface EcsOrchestratorFieldset {
-  api_version?: string;
-  namespace?: string;
-  organization?: string;
-  type?: string;
-  cluster?: {
-    id?: string;
-    name?: string;
-    url?: string;
-    version?: string;
-  };
-  resource?: {
-    id?: string;
-    ip?: string;
-    name?: string;
-    type?: string;
-    parent?: {
-      type?: string;
-    };
-  };
-}
-
-export type CloudProviderName = 'aws' | 'gcp' | 'azure' | 'other' | 'unknown' | 'none';
-
-export interface EcsCloudFieldset {
-  provider: CloudProviderName;
-  region?: string;
-  service?: {
-    name?: string;
+  version?: string;
+  cloud: {
+    provider?: CloudProviderName;
+    region?: string;
   };
 }
 
