@@ -7,15 +7,20 @@
 
 import { SearchRequest } from '@elastic/elasticsearch/lib/api/types';
 import { debug } from '../../common/debug_log';
-import { K8sNode } from '../../common/types_api';
+import { Asset, K8sNode } from '../../common/types_api';
 import { ASSETS_INDEX } from '../constants';
 import { esClient } from './es_client';
+import { getK8sPods } from './get_k8s_pods';
 
 interface GetK8sNodesOptions {
   clusterEan?: string;
+  includePods?: boolean;
 }
 
-export async function getK8sNodes({ clusterEan }: GetK8sNodesOptions = {}): Promise<K8sNode[]> {
+export async function getK8sNodes({
+  clusterEan,
+  includePods = false,
+}: GetK8sNodesOptions = {}): Promise<K8sNode[]> {
   const dsl: SearchRequest = {
     index: ASSETS_INDEX,
     query: {
@@ -46,24 +51,20 @@ export async function getK8sNodes({ clusterEan }: GetK8sNodesOptions = {}): Prom
 
   debug('Performing K8s Nodes Query', '\n\n', JSON.stringify(dsl, null, 2));
 
-  const response = await esClient.search<{
-    '@timestamp': string;
-    'asset.id': string;
-    'asset.name': string;
-    'asset.ean': string;
-  }>(dsl);
+  const response = await esClient.search<Asset>(dsl);
 
   const results = await Promise.all(
-    response.hits.hits.map(async (hit) => {
+    (Array.isArray(response.hits?.hits) ? response.hits.hits : []).map(async (hit) => {
       if (!hit._source) {
         throw new Error('Missing _source in node result');
       }
-      const s = hit._source;
+      const doc = hit._source;
       return {
-        '@timestamp': s['@timestamp'],
-        id: s['asset.id'],
-        name: s['asset.name'],
-        ean: s['asset.ean'],
+        '@timestamp': doc['@timestamp'],
+        id: doc['asset.id'],
+        name: doc['asset.name'],
+        ean: doc['asset.ean'],
+        pods: includePods ? await getK8sPods({ nodeEan: doc['asset.ean'] }) : [],
       };
     })
   );

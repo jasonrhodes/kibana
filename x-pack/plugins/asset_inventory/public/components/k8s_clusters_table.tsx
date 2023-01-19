@@ -9,25 +9,9 @@ import { EuiHealth, EuiIcon, EuiInMemoryTable } from '@elastic/eui';
 import { capitalize } from 'lodash';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { AssetStatus, CloudProviderName, K8sCluster, K8sNode } from '../../common/types_api';
-
-const cloudIconMap: Record<CloudProviderName, string> = {
-  gcp: 'logoGCP',
-  aws: 'logoAWS',
-  azure: 'logoAzure',
-  other: 'questionInCircle',
-  unknown: 'questionInCircle',
-  none: 'crossInACircleFilled',
-};
-
-const statusMap: Record<AssetStatus, string> = {
-  ACTIVE: 'success',
-  CREATING: 'subdued',
-  DELETING: 'subdued',
-  FAILED: 'danger',
-  UPDATING: 'subdued',
-  PENDING: 'warning',
-};
+import { AssetStatus, K8sCluster, K8sNode } from '../../common/types_api';
+import { cloudIconMap, statusMap } from '../constants';
+import { relativeTimeString } from '../lib/relative_time';
 
 export function K8sClustersTable({
   isLoading,
@@ -43,12 +27,12 @@ export function K8sClustersTable({
       sortable: true,
       width: '400px',
       render: (name: string) => {
-        return <Link to={`/k8s/clusters/${name}`}>{name}</Link>;
+        return <Link to={`/k8s/cluster?name=${name}`}>{name}</Link>;
       },
     },
     {
       field: 'status',
-      name: 'Status',
+      name: 'Latest Status',
       render: (status: AssetStatus) => (
         <EuiHealth color={statusMap[status]}>{capitalize(status)}</EuiHealth>
       ),
@@ -73,6 +57,11 @@ export function K8sClustersTable({
       field: 'nodes',
       name: 'Nodes',
       render: (nodes: K8sNode[]) => <>{nodes.length}</>,
+    },
+    {
+      field: '@timestamp',
+      name: 'Last Seen',
+      render: (ts: string) => relativeTimeString(new Date(ts)),
     },
   ];
 

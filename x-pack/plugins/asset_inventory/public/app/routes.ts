@@ -9,6 +9,7 @@ import { RouteProps } from 'react-router-dom';
 import { AssetInventoryListPage } from '../pages/asset_inventory_list_page';
 import { K8sClustersListPage } from '../pages/k8s/clusters_list_page';
 import { K8sClusterPage } from '../pages/k8s/cluster_page';
+import { K8sNodePage } from '../pages/k8s/node_page';
 
 export const routes: RouteProps[] = [
   {
@@ -22,8 +23,13 @@ export const routes: RouteProps[] = [
     component: K8sClustersListPage,
   },
   {
-    path: '/k8s/clusters/:name',
+    path: '/k8s/cluster',
     exact: true,
     component: K8sClusterPage,
+  },
+  {
+    path: '/k8s/node',
+    exact: true,
+    component: K8sNodePage,
   },
 ];
