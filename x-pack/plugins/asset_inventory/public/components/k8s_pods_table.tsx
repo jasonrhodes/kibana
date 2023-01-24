@@ -34,6 +34,5 @@ export function K8sPodsTable({ isLoading, pods }: { isLoading?: boolean; pods?: 
     },
   ];
 
-  // @ts-ignore
-  return <EuiInMemoryTable loading={isLoading} columns={columns} items={pods} />;
+  return <EuiInMemoryTable<K8sPod> loading={isLoading} columns={columns} items={pods} />;
 }

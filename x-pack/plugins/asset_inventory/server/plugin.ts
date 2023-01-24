@@ -136,7 +136,11 @@ export class AssetInventoryServerPlugin implements Plugin<AssetInventoryServerPl
       },
       async (context, req, res) => {
         try {
-          const result = await getK8sNode({ name: req.query.name, includeMetrics: true });
+          const result = await getK8sNode({
+            name: req.query.name,
+            includeMetrics: true,
+            includeLogs: true,
+          });
           return res.ok({ body: { result } });
         } catch (error: unknown) {
           debug('error getting single node', error);

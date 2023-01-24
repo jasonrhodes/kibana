@@ -66,6 +66,21 @@ export interface K8sPod extends WithTimestamp {
   };
 }
 
+export interface K8sNodeMetricBucket {
+  timestamp: number;
+  date?: string;
+  averageMemoryAvailable: number | null;
+  averageMemoryUsage: number | null;
+  maxMemoryUsage: number | null;
+  averageCpuCoreNs: number | null;
+  maxCpuCoreNs: number | null;
+}
+
+export interface K8sNodeLog {
+  timestamp: number;
+  message: string;
+}
+
 export interface K8sNode extends WithTimestamp {
   id: string;
   name?: string;
@@ -76,8 +91,8 @@ export interface K8sNode extends WithTimestamp {
     provider?: CloudProviderName;
     region?: string;
   };
-  metrics?: any;
-  logs?: any;
+  metrics?: K8sNodeMetricBucket[];
+  logs?: K8sNodeLog[];
 }
 
 export interface K8sCluster extends WithTimestamp {
