@@ -84,7 +84,7 @@ export function K8sNodePage() {
     <PageTemplate>
       <EuiPageTemplate.Header
         pageTitle={
-          <span title={nodeName}>Node Overview ({truncateAssetName(clusterName || '...')})</span>
+          <span title={nodeName}>Node Overview ({truncateAssetName(nodeName || '...')})</span>
         }
         breadcrumbs={breadcrumbs}
       />
