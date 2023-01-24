@@ -9,10 +9,11 @@ import React, { useEffect, useState } from 'react';
 import { EuiIcon, EuiPageTemplate } from '@elastic/eui';
 import axios from 'axios';
 import { useHistory, useLocation } from 'react-router-dom';
-import { K8sCluster } from '../../../common/types_api';
+import { EuiBreadcrumbProps } from '@elastic/eui/src/components/breadcrumbs/breadcrumb';
+import { K8sNode } from '../../../common/types_api';
 import { PageTemplate } from '../../components/page_template';
-import { K8sClusterInfo } from '../../components/k8s_cluster_info';
 import { useKibanaUrl } from '../../hooks/use_kibana_url';
+import { K8sNodeInfo } from '../../components/k8s_node_info';
 import { truncateAssetName } from '../../lib/truncate_string';
 
 interface QueryStringAccessor<T extends object> {
@@ -30,61 +31,65 @@ function useSearchParam<T extends object>(key: keyof T) {
   return React.useMemo(() => querystring.get(key), [querystring, key]);
 }
 
-export function K8sClusterPage() {
-  const [cluster, setCluster] = useState<K8sCluster | null>(null);
-  const clusterName = useSearchParam<{ name?: string }>('name');
+export function K8sNodePage() {
+  const [node, setNode] = useState<K8sNode | null>(null);
+  const nodeName = useSearchParam<{ name?: string }>('name');
   const history = useHistory();
-  const apiBaseUrl = useKibanaUrl('/api/asset-inventory/k8s/clusters');
+  const apiBaseUrl = useKibanaUrl('/api/asset-inventory/k8s/node');
 
   useEffect(() => {
     async function retrieve() {
-      if (!clusterName) {
+      if (!nodeName) {
         return;
       }
-      const response = await axios.get<any, { data?: { result?: K8sCluster } }>(
-        `${apiBaseUrl}?clusterName=${clusterName}`
+      const response = await axios.get<any, { data?: { result?: K8sNode } }>(
+        `${apiBaseUrl}?name=${nodeName}`
       );
       if (response.data && response.data?.result) {
-        setCluster(response.data.result);
+        setNode(response.data.result);
       }
     }
     retrieve();
-  }, [clusterName, apiBaseUrl]);
+  }, [nodeName, apiBaseUrl]);
 
-  if (!clusterName) {
+  if (!nodeName) {
     history.push('/k8s/clusters');
     return null;
   }
 
-  if (cluster === null) {
-    return null;
-  }
+  const clusterName = node?.cluster?.name;
+
+  const breadcrumbs: EuiBreadcrumbProps[] | undefined = clusterName
+    ? [
+        {
+          text: (
+            <>
+              <EuiIcon size="s" type="arrowLeft" /> Return to cluster{' '}
+              {truncateAssetName(clusterName)}
+            </>
+          ),
+          color: 'primary',
+          'aria-current': false,
+          href: '#',
+          onClick: (e) => {
+            e.preventDefault();
+            const path = clusterName ? `/k8s/cluster?name=${clusterName}` : '/k8s/clusters';
+            history.push(path);
+          },
+        },
+      ]
+    : undefined;
 
   return (
     <PageTemplate>
       <EuiPageTemplate.Header
         pageTitle={
-          <span title={clusterName}>Cluster Overview ({truncateAssetName(clusterName)})</span>
+          <span title={nodeName}>Node Overview ({truncateAssetName(clusterName || '...')})</span>
         }
-        breadcrumbs={[
-          {
-            text: (
-              <>
-                <EuiIcon size="s" type="arrowLeft" /> Return to cluster list
-              </>
-            ),
-            color: 'primary',
-            'aria-current': false,
-            href: '#',
-            onClick: (e) => {
-              e.preventDefault();
-              history.push('/k8s/clusters');
-            },
-          },
-        ]}
+        breadcrumbs={breadcrumbs}
       />
       <EuiPageTemplate.Section>
-        <K8sClusterInfo cluster={cluster} />
+        <K8sNodeInfo node={node} />
       </EuiPageTemplate.Section>
     </PageTemplate>
   );

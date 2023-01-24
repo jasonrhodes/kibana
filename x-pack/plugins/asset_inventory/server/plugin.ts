@@ -13,6 +13,7 @@ import { collectAssets } from './lib/collect_assets';
 import { getAssets } from './lib/get_assets';
 import { getK8sCluster } from './lib/get_k8s_cluster';
 import { getK8sClusters } from './lib/get_k8s_clusters';
+import { getK8sNode } from './lib/get_k8s_node';
 import { getValuesForField } from './lib/get_values_for_field';
 
 export type AssetInventoryServerPluginSetup = ReturnType<AssetInventoryServerPlugin['setup']>;
@@ -78,38 +79,67 @@ export class AssetInventoryServerPlugin implements Plugin<AssetInventoryServerPl
       }
     );
 
+    // router.get(
+    //   {
+    //     path: '/api/asset-inventory/k8s/clusters',
+    //     validate: false,
+    //   },
+    //   async (context, req, res) => {
+    //     try {
+    //       const results = await getK8sClusters();
+    //       return res.ok({ body: { results } });
+    //     } catch (error: unknown) {
+    //       debug('error looking up field values', error);
+    //       return res.customError({ statusCode: 500 });
+    //     }
+    //   }
+    // );
+
     router.get(
       {
         path: '/api/asset-inventory/k8s/clusters',
-        validate: false,
+        validate: {
+          query: schema.object({
+            clusterName: schema.maybe(schema.string()),
+          }),
+        },
       },
       async (context, req, res) => {
+        if (!req.query.clusterName) {
+          try {
+            const results = await getK8sClusters({ includeNodes: true });
+            return res.ok({ body: { results } });
+          } catch (error: unknown) {
+            debug('error getting clusters list', error);
+            return res.customError({ statusCode: 500 });
+          }
+        }
+
         try {
-          const results = await getK8sClusters();
-          return res.ok({ body: { results } });
+          const result = await getK8sCluster({ name: req.query.clusterName, includePods: true });
+          return res.ok({ body: { result } });
         } catch (error: unknown) {
-          debug('error looking up field values', error);
+          debug('error getting single cluster by name', req.query.clusterName, error);
           return res.customError({ statusCode: 500 });
         }
       }
     );
 
-    router.get<{ name: string }, {}, {}>(
+    router.get(
       {
-        path: '/api/asset-inventory/k8s/clusters/{name}',
+        path: '/api/asset-inventory/k8s/node',
         validate: {
-          params: schema.object({
+          query: schema.object({
             name: schema.string(),
           }),
         },
       },
       async (context, req, res) => {
-        const name = req.params.name;
         try {
-          const result = await getK8sCluster(name);
+          const result = await getK8sNode({ name: req.query.name, includeMetrics: true });
           return res.ok({ body: { result } });
         } catch (error: unknown) {
-          debug('error looking up field values', error);
+          debug('error getting single node', error);
           return res.customError({ statusCode: 500 });
         }
       }

@@ -7,12 +7,20 @@
 
 export type AssetKind = 'unknown' | 'node';
 export type AssetType = 'k8s.pod' | 'k8s.cluster' | 'k8s.node';
-export type AssetStatus = 'CREATING' | 'ACTIVE' | 'DELETING' | 'FAILED' | 'UPDATING' | 'PENDING';
+export type AssetStatus =
+  | 'CREATING'
+  | 'ACTIVE'
+  | 'DELETING'
+  | 'FAILED'
+  | 'UPDATING'
+  | 'PENDING'
+  | 'UNKNOWN';
 export type CloudProviderName = 'aws' | 'gcp' | 'azure' | 'other' | 'unknown' | 'none';
 
-export interface ECSDocument {
+interface WithTimestamp {
   '@timestamp': string;
-
+}
+export interface ECSDocument extends WithTimestamp {
   'kubernetes.namespace'?: string;
   'kubernetes.pod.name'?: string;
   'kubernetes.pod.uid'?: string;
@@ -47,27 +55,38 @@ export interface Asset extends ECSDocument {
   'asset.namespace'?: string;
 }
 
-export interface K8sPod extends ECSDocument {
+export interface K8sPod extends WithTimestamp {
   id: string;
-  name: string;
+  name?: string;
   ean: string;
   node?: string;
+  cloud?: {
+    provider?: CloudProviderName;
+    region?: string;
+  };
 }
 
-export interface K8sNode extends ECSDocument {
+export interface K8sNode extends WithTimestamp {
   id: string;
-  name: string;
+  name?: string;
   ean: string;
   pods?: K8sPod[];
-  cluster?: string;
+  cluster?: K8sCluster;
+  cloud?: {
+    provider?: CloudProviderName;
+    region?: string;
+  };
+  metrics?: any;
+  logs?: any;
 }
 
-export interface K8sCluster extends ECSDocument {
-  name: string;
-  nodes: K8sNode[];
-  status: string;
+export interface K8sCluster extends WithTimestamp {
+  name?: string;
+  nodes?: K8sNode[];
+  ean: string;
+  status?: AssetStatus;
   version?: string;
-  cloud: {
+  cloud?: {
     provider?: CloudProviderName;
     region?: string;
   };

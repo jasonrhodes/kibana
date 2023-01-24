@@ -12,7 +12,13 @@ import { ASSETS_INDEX } from '../constants';
 import { esClient } from './es_client';
 import { getK8sNodes } from './get_k8s_nodes';
 
-export async function getK8sClusters(): Promise<K8sCluster[]> {
+interface GetK8sClustersOptions {
+  includeNodes?: boolean;
+}
+
+export async function getK8sClusters({ includeNodes = false }: GetK8sClustersOptions = {}): Promise<
+  K8sCluster[]
+> {
   const dsl: SearchRequest = {
     index: ASSETS_INDEX,
     query: {
@@ -41,7 +47,7 @@ export async function getK8sClusters(): Promise<K8sCluster[]> {
   const response = await esClient.search<Asset>(dsl);
 
   const results = await Promise.all(
-    response.hits.hits.map(async (hit) => {
+    (Array.isArray(response.hits?.hits) ? response.hits.hits : []).map(async (hit) => {
       if (!hit._source) {
         throw new Error('Missing _source in cluster result');
       }
@@ -49,7 +55,8 @@ export async function getK8sClusters(): Promise<K8sCluster[]> {
       return {
         '@timestamp': doc['@timestamp'],
         name: doc['asset.name'] || doc['asset.id'],
-        nodes: await getK8sNodes({ clusterEan: doc['asset.ean'] }),
+        ean: doc['asset.ean'],
+        nodes: includeNodes ? await getK8sNodes({ clusterEan: doc['asset.ean'] }) : [],
         status: doc['asset.status'] || 'UNKNOWN',
         cloud: {
           provider: doc['cloud.provider'],

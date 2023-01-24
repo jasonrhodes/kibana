@@ -7,21 +7,37 @@
 
 import { SearchRequest } from '@elastic/elasticsearch/lib/api/types';
 import { debug } from '../../common/debug_log';
-import { EcsOrchestratorFieldset, K8sCluster } from '../../common/types_api';
+import { Asset, K8sCluster } from '../../common/types_api';
 import { ASSETS_INDEX } from '../constants';
 import { esClient } from './es_client';
 import { getK8sNodes } from './get_k8s_nodes';
 
-export async function getK8sCluster(name: string): Promise<K8sCluster> {
+export async function getK8sCluster({
+  name,
+  ean,
+  nodeEan,
+  includePods = false,
+}: {
+  name?: string;
+  ean?: string;
+  nodeEan?: string;
+  includePods?: boolean;
+}): Promise<K8sCluster | undefined> {
+  const searchByTerm: Record<string, any> = name
+    ? { ['asset.name']: name }
+    : ean
+    ? { ['asset.ean']: ean }
+    : nodeEan
+    ? { ['asset.children']: nodeEan }
+    : {};
+
   const dsl: SearchRequest = {
     index: ASSETS_INDEX,
     query: {
       bool: {
         must: [
           {
-            term: {
-              ['asset.name']: name,
-            },
+            term: searchByTerm,
           },
           {
             term: {
@@ -41,27 +57,28 @@ export async function getK8sCluster(name: string): Promise<K8sCluster> {
     },
   };
 
-  debug('Performing K8s Clusters Query', '\n\n', JSON.stringify(dsl, null, 2));
+  debug('Performing K8s Single Cluster Query', '\n\n', JSON.stringify(dsl, null, 2));
 
-  const response = await esClient.search<{
-    '@timestamp': string;
-    'asset.name': string;
-    'asset.ean': string;
-    'asset.id': string;
-    orchestrator: EcsOrchestratorFieldset;
-  }>(dsl);
+  const response = await esClient.search<Asset>(dsl);
 
-  const { _source: cluster } = response.hits.hits[0];
-  if (!cluster) {
-    throw new Error('No cluster returned');
+  const result = Array.isArray(response.hits?.hits) ? response.hits.hits[0] : null;
+
+  if (!result || !result._source) {
+    return undefined;
   }
-  const nodes = await getK8sNodes({ clusterEan: cluster['asset.ean'] });
+  const cluster = result._source;
+  const nodes = await getK8sNodes({ clusterEan: cluster['asset.ean'], includePods });
 
   return {
     '@timestamp': cluster['@timestamp'],
     name: cluster['asset.name'],
+    ean: cluster['asset.ean'],
     nodes,
-    status: 'Healthy',
-    version: cluster.orchestrator?.cluster?.version || 'unspecified',
+    status: cluster['asset.status'] || 'UNKNOWN',
+    version: cluster['orchestrator.cluster.version'],
+    cloud: {
+      provider: cluster['cloud.provider'],
+      region: cluster['cloud.region'],
+    },
   };
 }
