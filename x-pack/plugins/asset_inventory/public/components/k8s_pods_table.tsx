@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import { EuiInMemoryTable } from '@elastic/eui';
+import { EuiInMemoryTable, EuiText } from '@elastic/eui';
 import React from 'react';
 import { K8sPod } from '../../common/types_api';
 import { relativeTimeString } from '../lib/relative_time';
@@ -34,5 +34,12 @@ export function K8sPodsTable({ isLoading, pods }: { isLoading?: boolean; pods?: 
     },
   ];
 
-  return <EuiInMemoryTable<K8sPod> loading={isLoading} columns={columns} items={pods} />;
+  return (
+    <>
+      <EuiText>
+        <b>Pods on this node</b>
+      </EuiText>
+      <EuiInMemoryTable<K8sPod> loading={isLoading} columns={columns} items={pods} />
+    </>
+  );
 }

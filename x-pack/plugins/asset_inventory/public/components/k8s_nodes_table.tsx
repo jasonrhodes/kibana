@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import { EuiInMemoryTable } from '@elastic/eui';
+import { EuiInMemoryTable, EuiSpacer, EuiText } from '@elastic/eui';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { K8sNode, K8sPod } from '../../common/types_api';
@@ -29,6 +29,7 @@ export function K8sNodesTable({ isLoading, nodes }: { isLoading?: boolean; nodes
     {
       field: 'pods',
       name: 'Pods',
+      width: '150px',
       render: (pods?: K8sPod[]) => <>{pods?.length || 0}</>,
     },
     {
@@ -38,6 +39,13 @@ export function K8sNodesTable({ isLoading, nodes }: { isLoading?: boolean; nodes
     },
   ];
 
-  // @ts-ignore
-  return <EuiInMemoryTable loading={isLoading} columns={columns} items={nodes} />;
+  return (
+    <>
+      <EuiText>
+        <b>Nodes in cluster</b>
+      </EuiText>
+      <EuiSpacer />
+      <EuiInMemoryTable<K8sNode> loading={isLoading} columns={columns} items={nodes} />
+    </>
+  );
 }

@@ -6,7 +6,8 @@
  */
 
 import {
-  EuiDescriptionList,
+  EuiFlexGroup,
+  EuiFlexItem,
   EuiLoadingChart,
   EuiPageTemplate,
   EuiSpacer,
@@ -17,6 +18,8 @@ import { Axis, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic
 import { K8sNode } from '../../common/types_api';
 import { K8sPodsTable } from './k8s_pods_table';
 import { K8sLogsTable } from './k8s_logs_table';
+import { CustomDescriptionList } from './custom_description_list';
+import { SectionRule } from './section_rule';
 
 function dateFormatter(x: number) {
   const d = new Date(x);
@@ -35,17 +38,6 @@ export function K8sNodeInfo({ node }: { node: K8sNode | null }) {
     );
   }
 
-  const list: Array<{ title: string; description: React.ReactChild }> = [
-    {
-      title: 'Node name',
-      description: node.name || '',
-    },
-    {
-      title: 'Node UID',
-      description: node.id || '',
-    },
-  ];
-
   const { metrics = [] } = node;
 
   const processedMetrics = metrics.map((bucket) => ({
@@ -60,102 +52,120 @@ export function K8sNodeInfo({ node }: { node: K8sNode | null }) {
   return (
     <>
       <EuiPageTemplate.Section>
-        <EuiDescriptionList listItems={list} />
-        <EuiSpacer />
-        <EuiText textAlign="center">
-          <b>Node Memory Usage (Last Hour)</b>
-        </EuiText>
-        <Chart size={{ width: 1000, height: 500 }}>
-          <Settings />
-          <Axis
-            id="bottom"
-            position={Position.Bottom}
-            showOverlappingTicks
-            tickFormat={dateFormatter}
-            title="Time"
-          />
-          <Axis
-            id="left"
-            position={Position.Left}
-            showOverlappingTicks
-            tickFormat={(x) => x.toFixed(0)}
-            title="Memory (GB)"
-          />
-          <LineSeries
-            id="averageMemoryUsage"
-            name="Avg Usage"
-            xScaleType={ScaleType.Time}
-            yScaleType={ScaleType.Linear}
-            xAccessor={'timestamp'}
-            yAccessors={['averageMemoryUsage']}
-            timeZone="local"
-            data={processedMetrics}
-          />
-          <LineSeries
-            id="averageMemoryAvailable"
-            name="Available"
-            xScaleType={ScaleType.Time}
-            yScaleType={ScaleType.Linear}
-            xAccessor={'timestamp'}
-            yAccessors={['averageMemoryAvailable']}
-            timeZone="local"
-            data={processedMetrics}
-          />
-          <LineSeries
-            id="maxMemoryUsage"
-            name="Max Usage"
-            xScaleType={ScaleType.Time}
-            yScaleType={ScaleType.Linear}
-            xAccessor={'timestamp'}
-            yAccessors={['maxMemoryUsage']}
-            timeZone="local"
-            data={processedMetrics}
-          />
-        </Chart>
-        <EuiSpacer />
-        <EuiText textAlign="center">
-          <b>Node CPU Usage (Last Hour)</b>
-        </EuiText>
-        <Chart size={{ width: 1000, height: 500 }}>
-          <Settings />
-          <Axis
-            id="bottom"
-            position={Position.Bottom}
-            showOverlappingTicks
-            tickFormat={dateFormatter}
-            title="Time"
-          />
-          <Axis
-            id="left"
-            position={Position.Left}
-            showOverlappingTicks
-            tickFormat={(x) => x.toFixed(2)}
-            title="CPU (% per minute)"
-          />
-          <LineSeries
-            id="averageCpuCoreNs"
-            name="Avg CPU"
-            xScaleType={ScaleType.Time}
-            yScaleType={ScaleType.Linear}
-            xAccessor={'timestamp'}
-            yAccessors={['averageCpuCoreNs']}
-            timeZone="local"
-            data={processedMetrics}
-          />
-          <LineSeries
-            id="maxCpuCoreNs"
-            name="Max CPU"
-            xScaleType={ScaleType.Time}
-            yScaleType={ScaleType.Linear}
-            xAccessor={'timestamp'}
-            yAccessors={['maxCpuCoreNs']}
-            timeZone="local"
-            data={processedMetrics}
-          />
-        </Chart>
-        <EuiSpacer />
+        <CustomDescriptionList
+          items={[
+            {
+              title: 'Node name',
+              description: node.name,
+            },
+            {
+              title: 'Node UID',
+              description: node.id,
+            },
+          ]}
+        />
+        <SectionRule />
+        <EuiFlexGroup>
+          <EuiFlexItem>
+            <EuiText textAlign="left">
+              <b>Node memory usage (last 12 hours)</b>
+            </EuiText>
+            <EuiSpacer size="xs" />
+            <Chart size={{ width: '100%', height: 200 }}>
+              <Settings />
+              <Axis
+                id="bottom"
+                position={Position.Bottom}
+                showOverlappingTicks
+                tickFormat={dateFormatter}
+                title="Time"
+              />
+              <Axis
+                id="left"
+                position={Position.Left}
+                showOverlappingTicks
+                tickFormat={(x) => x.toFixed(0)}
+                title="Memory (GB)"
+              />
+              <LineSeries
+                id="averageMemoryUsage"
+                name="Avg Usage"
+                xScaleType={ScaleType.Time}
+                yScaleType={ScaleType.Linear}
+                xAccessor={'timestamp'}
+                yAccessors={['averageMemoryUsage']}
+                timeZone="local"
+                data={processedMetrics}
+              />
+              <LineSeries
+                id="averageMemoryAvailable"
+                name="Available"
+                xScaleType={ScaleType.Time}
+                yScaleType={ScaleType.Linear}
+                xAccessor={'timestamp'}
+                yAccessors={['averageMemoryAvailable']}
+                timeZone="local"
+                data={processedMetrics}
+              />
+              <LineSeries
+                id="maxMemoryUsage"
+                name="Max Usage"
+                xScaleType={ScaleType.Time}
+                yScaleType={ScaleType.Linear}
+                xAccessor={'timestamp'}
+                yAccessors={['maxMemoryUsage']}
+                timeZone="local"
+                data={processedMetrics}
+              />
+            </Chart>
+          </EuiFlexItem>
+          <EuiFlexItem>
+            <EuiText textAlign="left">
+              <b>Node CPU usage (last 12 hours)</b>
+            </EuiText>
+            <EuiSpacer size="xs" />
+            <Chart size={{ width: '100%', height: 200 }}>
+              <Settings />
+              <Axis
+                id="bottom"
+                position={Position.Bottom}
+                showOverlappingTicks
+                tickFormat={dateFormatter}
+                title="Time"
+              />
+              <Axis
+                id="left"
+                position={Position.Left}
+                showOverlappingTicks
+                tickFormat={(x) => x.toFixed(2)}
+                title="CPU (% per minute)"
+              />
+              <LineSeries
+                id="averageCpuCoreNs"
+                name="Avg CPU"
+                xScaleType={ScaleType.Time}
+                yScaleType={ScaleType.Linear}
+                xAccessor={'timestamp'}
+                yAccessors={['averageCpuCoreNs']}
+                timeZone="local"
+                data={processedMetrics}
+              />
+              <LineSeries
+                id="maxCpuCoreNs"
+                name="Max CPU"
+                xScaleType={ScaleType.Time}
+                yScaleType={ScaleType.Linear}
+                xAccessor={'timestamp'}
+                yAccessors={['maxCpuCoreNs']}
+                timeZone="local"
+                data={processedMetrics}
+              />
+            </Chart>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+        <SectionRule />
         <K8sLogsTable logs={node.logs || []} />
-        <EuiSpacer />
+        <SectionRule />
         <K8sPodsTable pods={node.pods} />
       </EuiPageTemplate.Section>
     </>

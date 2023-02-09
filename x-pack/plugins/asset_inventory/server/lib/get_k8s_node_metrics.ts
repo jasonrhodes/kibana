@@ -24,7 +24,7 @@ interface GetK8sNodeMetricsOptions {
 
 export async function getK8sNodeMetrics({
   name,
-  range = 'gte:now-1h',
+  range = 'gte:now-12h',
 }: GetK8sNodeMetricsOptions): Promise<K8sNodeMetricBucket[]> {
   const [rangeType, rangeLength] = range.split(':');
   const query: QueryDslQueryContainer = {
@@ -61,7 +61,7 @@ export async function getK8sNodeMetrics({
     metrics_histogram: {
       date_histogram: {
         field: '@timestamp',
-        calendar_interval: '1m',
+        calendar_interval: '1h',
       },
       aggs: {
         averageMemoryUsage: {
