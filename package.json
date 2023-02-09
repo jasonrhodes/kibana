@@ -638,6 +638,7 @@
     "@kbn/timelines-plugin": "link:x-pack/plugins/timelines",
     "@kbn/timelion-grammar": "link:packages/kbn-timelion-grammar",
     "@kbn/tinymath": "link:packages/kbn-tinymath",
+    "@kbn/topology-assets-plugin": "link:x-pack/plugins/topology_assets",
     "@kbn/transform-plugin": "link:x-pack/plugins/transform",
     "@kbn/translations-plugin": "link:x-pack/plugins/translations",
     "@kbn/triggers-actions-ui-example-plugin": "link:x-pack/examples/triggers_actions_ui_example",

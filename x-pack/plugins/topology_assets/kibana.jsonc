@@ -1,0 +1,20 @@
+{
+  "type": "plugin",
+  "id": "@kbn/topology-assets-plugin",
+  "owner": [
+    "@elastic/observability-ui"
+  ],
+  "plugin": {
+    "id": "topologyAssets",
+    "server": true,
+    "browser": false,
+    "configPath": [
+      "xpack",
+      "topologyAssets"
+    ],
+    "requiredPlugins": [
+      "data"
+    ],
+    "optionalPlugins": []
+  }
+}

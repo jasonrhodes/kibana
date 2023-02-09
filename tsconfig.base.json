@@ -1266,6 +1266,8 @@
       "@kbn/tinymath/*": ["packages/kbn-tinymath/*"],
       "@kbn/tooling-log": ["packages/kbn-tooling-log"],
       "@kbn/tooling-log/*": ["packages/kbn-tooling-log/*"],
+      "@kbn/topology-assets-plugin": ["x-pack/plugins/topology_assets"],
+      "@kbn/topology-assets-plugin/*": ["x-pack/plugins/topology_assets/*"],
       "@kbn/transform-plugin": ["x-pack/plugins/transform"],
       "@kbn/transform-plugin/*": ["x-pack/plugins/transform/*"],
       "@kbn/translations-plugin": ["x-pack/plugins/translations"],

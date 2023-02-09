@@ -5257,6 +5257,10 @@
   version "0.0.0"
   uid ""
 
+"@kbn/topology-assets-plugin@link:x-pack/plugins/topology_assets":
+  version "0.0.0"
+  uid ""
+
 "@kbn/transform-plugin@link:x-pack/plugins/transform":
   version "0.0.0"
   uid ""
