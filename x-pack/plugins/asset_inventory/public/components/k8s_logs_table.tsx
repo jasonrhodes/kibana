@@ -5,10 +5,9 @@
  * 2.0.
  */
 
-import { EuiInMemoryTable, EuiText } from '@elastic/eui';
+import { EuiInMemoryTable, EuiSpacer, EuiText } from '@elastic/eui';
 import React from 'react';
 import { K8sNodeLog } from '../../common/types_api';
-import { relativeTimeString } from '../lib/relative_time';
 
 export function K8sLogsTable({ logs }: { logs: K8sNodeLog[] }) {
   const columns = [
@@ -17,7 +16,7 @@ export function K8sLogsTable({ logs }: { logs: K8sNodeLog[] }) {
       name: 'Timestamp',
       sortable: true,
       width: '400px',
-      render: (ts: string) => relativeTimeString(new Date(ts)),
+      render: (ts: string) => getUTCTime(new Date(ts)),
     },
     {
       field: 'message',
@@ -29,8 +28,9 @@ export function K8sLogsTable({ logs }: { logs: K8sNodeLog[] }) {
   return (
     <>
       <EuiText>
-        <b>Node Logs (Last 12 Hours)</b>
+        <b>Node Logs (Last 24 Hours, 500 logs max)</b>
       </EuiText>
+      <EuiSpacer />
       <EuiInMemoryTable<K8sNodeLog>
         loading={false}
         columns={columns}
@@ -46,4 +46,19 @@ export function K8sLogsTable({ logs }: { logs: K8sNodeLog[] }) {
       />
     </>
   );
+}
+
+function getUTCTime(date: Date) {
+  const hour = padLeft(date.getUTCHours());
+  const minute = padLeft(date.getUTCMinutes());
+  const second = padLeft(date.getUTCSeconds());
+  return `${hour}:${minute}:${second}`;
+}
+
+function padLeft(n: number) {
+  if (n < 10) {
+    return `0${n}`;
+  }
+
+  return `${n}`;
 }

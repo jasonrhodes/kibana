@@ -5,18 +5,20 @@
  * 2.0.
  */
 
-import { EuiDescriptionList, EuiHealth, EuiIcon, EuiPageTemplate, EuiSpacer } from '@elastic/eui';
+import { EuiHealth, EuiIcon, EuiPageTemplate } from '@elastic/eui';
 import { capitalize } from 'lodash';
 import React from 'react';
 import { K8sCluster } from '../../common/types_api';
 import { cloudIconMap, statusMap } from '../constants';
+import { CustomDescriptionList, DLItem } from './custom_description_list';
 import { K8sNodesTable } from './k8s_nodes_table';
+import { SectionRule } from './section_rule';
 
 export function K8sClusterInfo({ cluster }: { cluster: K8sCluster }) {
-  const list: Array<{ title: string; description: React.ReactChild }> = [
+  const list: DLItem[] = [
     {
       title: 'Cluster name',
-      description: cluster.name || '',
+      description: cluster.name,
     },
     {
       title: 'Status',
@@ -28,20 +30,12 @@ export function K8sClusterInfo({ cluster }: { cluster: K8sCluster }) {
     },
     {
       title: 'Version',
-      description: cluster.version || '',
+      description: cluster.version,
     },
-    // {
-    //   title: 'Nodes',
-    //   description: (
-    //     <ul>
-    //       {nodes.map((node) => (
-    //         <li key={node.id}>
-    //           <Link to={`/k8s/nodes/${node.name}`}>{node.name}</Link>
-    //         </li>
-    //       ))}
-    //     </ul>
-    //   ),
-    // },
+    {
+      title: '',
+      description: '',
+    },
   ];
 
   if (cluster.cloud?.provider) {
@@ -61,8 +55,8 @@ export function K8sClusterInfo({ cluster }: { cluster: K8sCluster }) {
   return (
     <>
       <EuiPageTemplate.Section>
-        <EuiDescriptionList listItems={list} />
-        <EuiSpacer />
+        <CustomDescriptionList items={list} />
+        <SectionRule />
         <K8sNodesTable nodes={cluster.nodes} />
       </EuiPageTemplate.Section>
     </>
