@@ -1,0 +1,23 @@
+{
+  "type": "plugin",
+  "id": "@kbn/observability-data-plugin",
+  "owner": "@jasonrhodes",
+  "description": "Spike experiment for exploring data access patterns within observability",
+  "plugin": {
+    "id": "observabilityData",
+    "configPath": [
+      "xpack",
+      "observabilityData"
+    ],
+    "optionalPlugins": [
+    ],
+    "requiredPlugins": [
+      "apmDataAccess",
+      "metricsDataAccess"
+    ],
+    "browser": true,
+    "server": true,
+    "requiredBundles": [
+    ]
+  }
+}
