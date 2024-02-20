@@ -13,9 +13,9 @@ import {
 import * as t from 'io-ts';
 import { RouteResponseList } from '@kbn/observability-data-plugin/common/api_types';
 import { filterAsQuerySourceList, isQuerySource } from '@kbn/observability-data-plugin/common/runtime_types';
-import { getHostsFromProfiling } from './getHostsFromProfiling';
-import { getHostsFromLogsAndMetrics } from './getHostsFromLogsAndMetrics';
-import { combineHosts } from './combineHosts';
+import { getHostsFromProfiling } from './get_hosts_from_profiling';
+import { getHostsFromLogsAndMetrics } from './get_hosts_from_logs_and_metrics';
+import { combineHosts } from './combine_hosts';
 
 export function registerListHostsRoute(
   routeFactory: RouteFactory<ObservabilityDataRequestHandlerContext>
