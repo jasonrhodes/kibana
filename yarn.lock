@@ -5874,6 +5874,10 @@
   version "0.0.0"
   uid ""
 
+"@kbn/observability-data-plugin@link:x-pack/plugins/observability_data":
+  version "0.0.0"
+  uid ""
+
 "@kbn/observability-fixtures-plugin@link:x-pack/test/cases_api_integration/common/plugins/observability":
   version "0.0.0"
   uid ""
