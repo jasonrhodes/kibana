@@ -1,0 +1,21 @@
+{
+  "extends": "../../../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "target/types"
+  },
+  "include": [
+    "common/**/*",
+    "public/**/*",
+    "server/**/*"
+  ],
+  "references": [
+    { "path": "../../../../src/core/tsconfig.json" },
+    { "path": "../../../../src/plugins/data/tsconfig.json" },
+    { "path": "../../../../src/plugins/data_views/tsconfig.json" },
+    { "path": "../../../../x-pack/plugins/features/tsconfig.json" },
+    { "path": "../../../../x-pack/plugins/licensing/tsconfig.json" },
+    { "path": "../../../../x-pack/plugins/spaces/tsconfig.json" },
+    { "path": "../../../../x-pack/plugins/security/tsconfig.json" },
+    { "path": "../../../../src/plugins/usage_collection/tsconfig.json" }
+  ]
+}

@@ -6499,6 +6499,10 @@
   version "0.0.0"
   uid ""
 
+"@kbn/obs-incidents@link:x-pack/solutions/observability/plugins/incidents":
+  version "0.0.0"
+  uid ""
+
 "@kbn/observability-ai-assistant-app-plugin@link:x-pack/solutions/observability/plugins/observability_ai_assistant_app":
   version "0.0.0"
   uid ""

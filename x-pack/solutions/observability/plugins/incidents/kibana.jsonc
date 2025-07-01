@@ -1,0 +1,32 @@
+{
+  "type": "plugin",
+  "id": "@kbn/obs-incidents",
+  "owner": "@jasonrhodes",
+  "group": "observability",
+  "plugin": {
+    "id": "obsIncidents",
+    "configPath": ["x-pack", "obsIncidents"],
+    "browser": true,
+    "server": true,
+    "requiredPlugins": [
+      "data",
+      "dataViews",
+      "features",
+      "licensing",
+      "spaces",
+      "security",
+      "usageCollection"
+    ],
+    "optionalPlugins": [
+      "alerting",
+      "notifications",
+      "ruleRegistry",
+      "taskManager",
+      "fleet",
+      "cloud"
+    ],
+    "requiredBundles": [
+      "kibanaReact"
+    ]
+  }
+}
