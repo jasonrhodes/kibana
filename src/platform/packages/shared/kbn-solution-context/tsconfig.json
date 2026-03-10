@@ -4,11 +4,13 @@
     "outDir": "target/types",
     "types": [
       "jest",
-      "node"
+      "node",
+      "react"
     ]
   },
   "include": [
-    "**/*.ts"
+    "**/*.ts",
+    "**/*.tsx"
   ],
   "kbn_references": [
     "@kbn/projects-solutions-groups",

@@ -150,7 +150,8 @@ export function RuleComponent({
     executionStatusTranslations: rulesStatusesTranslationsMapping,
   });
 
-  const { solution } = useSolutionContext(cloud, spaces);
+  const solutionContext = useSolutionContext(cloud, spaces);
+  const solution = solutionContext?.solution ?? 'classic';
 
   const alertDetailsNavigation = useMemo<AlertDetailsNavigation | undefined>(() => {
     if (solution === 'observability') {

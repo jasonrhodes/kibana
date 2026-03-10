@@ -14,6 +14,9 @@ import { getSolutionContext } from './get_solution_context';
 /**
  * React hook that resolves the active {@link SolutionContext}.
  *
+ * Both `cloud` and `spaces` are optional to match the reality that
+ * these plugins may not be available in all deployments.
+ *
  * In serverless mode the context is available synchronously from the
  * Cloud plugin, so this hook never returns `undefined`.
  *
@@ -22,9 +25,12 @@ import { getSolutionContext } from './get_solution_context';
  * signal that the context is not yet known. Callers should treat
  * `undefined` as "loading" and defer rendering decisions until a
  * value is available.
+ *
+ * When `cloud` is not available, the hook falls back to the space
+ * solution view, or 'classic' if neither plugin is present.
  */
 export function useSolutionContext(
-  cloud: CloudSetup | CloudStart,
+  cloud?: CloudSetup | CloudStart | null,
   spaces?: SpacesApi | null
 ): SolutionContext | undefined {
   const [spaceSolution, setSpaceSolution] = useState<SolutionView | undefined>();
@@ -41,7 +47,7 @@ export function useSolutionContext(
     }
   }, [spaces]);
 
-  if (cloud.isServerlessEnabled) {
+  if (cloud?.isServerlessEnabled) {
     return getSolutionContext(cloud);
   }
 
