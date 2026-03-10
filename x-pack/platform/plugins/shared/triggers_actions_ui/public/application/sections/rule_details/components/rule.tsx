@@ -77,6 +77,8 @@ export function RuleComponent({
     ruleTypeRegistry,
     actionTypeRegistry,
     getCasesPlugin,
+    cloud,
+    spaces,
     data,
     http,
     notifications,
@@ -147,15 +149,19 @@ export function RuleComponent({
     executionStatusTranslations: rulesStatusesTranslationsMapping,
   });
 
-  const hasObservabilityAccess = useMemo(() => {
-    const { capabilities } = application;
-    const { apm, metrics, uptime, synthetics, slo } = capabilities.navLinks;
-    const logs = capabilities.logs?.show;
-    return [apm, metrics, uptime, synthetics, slo, logs].some(Boolean);
-  }, [application]);
+  const [spaceSolution, setSpaceSolution] = useState<string | undefined>();
+
+  useEffect(() => {
+    spaces?.getActiveSpace().then((space) => setSpaceSolution(space?.solution));
+  }, [spaces]);
+
+  const solutionType = cloud?.serverless?.projectType ?? spaceSolution ?? 'classic';
+
+  const isObservabilitySolution = solutionType === 'observability' || solutionType === 'oblt';
+  const isSecuritySolution = solutionType === 'security';
 
   const alertDetailsNavigation = useMemo<AlertDetailsNavigation | undefined>(() => {
-    if (hasObservabilityAccess) {
+    if (isObservabilitySolution) {
       return {
         appId: 'observability',
         getPath: (alertId: string) => `/alerts/${encodeURIComponent(alertId)}`,
@@ -163,9 +169,13 @@ export function RuleComponent({
     }
 
     return undefined;
-  }, [hasObservabilityAccess]);
+  }, [isObservabilitySolution]);
 
-  const casesOwner = hasObservabilityAccess ? 'observability' : 'cases';
+  const casesOwner = isObservabilitySolution
+    ? 'observability'
+    : isSecuritySolution
+    ? 'securitySolution'
+    : 'cases';
 
   const renderRuleAlertList = useCallback(() => {
     if (ruleType.hasAlertsMappings) {
@@ -182,7 +192,7 @@ export function RuleComponent({
           getAlertFormatter={getAlertFormatter}
           alertDetailsNavigation={alertDetailsNavigation}
           casesConfiguration={{
-            featureId: 'management',
+            featureId: 'not_used',
             owner: [casesOwner],
           }}
           services={{
