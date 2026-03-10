@@ -8,6 +8,7 @@
 import React, { lazy, useCallback, useEffect, useMemo, useState } from 'react';
 import { i18n } from '@kbn/i18n';
 import type { BoolQuery } from '@kbn/es-query';
+import { useSolutionContext } from '@kbn/solution-context';
 import { EuiSpacer, EuiFlexGroup, EuiFlexItem, EuiTabbedContent, useEuiTheme } from '@elastic/eui';
 import type { AlertStatusValues } from '@kbn/alerting-plugin/common';
 import { ALERT_RULE_UUID } from '@kbn/rule-data-utils';
@@ -149,19 +150,10 @@ export function RuleComponent({
     executionStatusTranslations: rulesStatusesTranslationsMapping,
   });
 
-  const [spaceSolution, setSpaceSolution] = useState<string | undefined>();
-
-  useEffect(() => {
-    spaces?.getActiveSpace().then((space) => setSpaceSolution(space?.solution));
-  }, [spaces]);
-
-  const solutionType = cloud?.serverless?.projectType ?? spaceSolution ?? 'classic';
-
-  const isObservabilitySolution = solutionType === 'observability' || solutionType === 'oblt';
-  const isSecuritySolution = solutionType === 'security';
+  const { solution } = useSolutionContext(cloud, spaces);
 
   const alertDetailsNavigation = useMemo<AlertDetailsNavigation | undefined>(() => {
-    if (isObservabilitySolution) {
+    if (solution === 'observability') {
       return {
         appId: 'observability',
         getPath: (alertId: string) => `/alerts/${encodeURIComponent(alertId)}`,
@@ -169,13 +161,14 @@ export function RuleComponent({
     }
 
     return undefined;
-  }, [isObservabilitySolution]);
+  }, [solution]);
 
-  const casesOwner = isObservabilitySolution
-    ? 'observability'
-    : isSecuritySolution
-    ? 'securitySolution'
-    : 'cases';
+  const casesOwner =
+    solution === 'observability'
+      ? 'observability'
+      : solution === 'security'
+      ? 'securitySolution'
+      : 'cases';
 
   const renderRuleAlertList = useCallback(() => {
     if (ruleType.hasAlertsMappings) {

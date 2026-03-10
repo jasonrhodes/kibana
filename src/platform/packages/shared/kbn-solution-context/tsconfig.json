@@ -1,0 +1,21 @@
+{
+  "extends": "@kbn/tsconfig-base/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "target/types",
+    "types": [
+      "jest",
+      "node"
+    ]
+  },
+  "include": [
+    "**/*.ts"
+  ],
+  "kbn_references": [
+    "@kbn/projects-solutions-groups",
+    "@kbn/cloud-plugin",
+    "@kbn/spaces-plugin"
+  ],
+  "exclude": [
+    "target/**/*"
+  ]
+}
