@@ -6,9 +6,10 @@
  */
 
 import type { IlmPolicy } from '@elastic/elasticsearch/lib/api/types';
-import type { MappingsDefinition } from '@kbn/es-mappings';
 import { z } from '@kbn/zod';
 import type { ResourceDefinition } from './types';
+import type { FieldMap } from './field_map';
+import { mappingFromFieldMap, zodSchemaFromFieldMap } from './field_map';
 
 export const ALERT_EVENTS_DATA_STREAM = '.alerting-events';
 export const ALERT_EVENTS_DATA_STREAM_VERSION = 1;
@@ -29,61 +30,49 @@ export const ALERT_EVENTS_ILM_POLICY: IlmPolicy = {
   },
 };
 
-const mappings: MappingsDefinition = {
-  dynamic: false,
-  properties: {
-    // Document '_id' is used as the unique alert event identifier
-    '@timestamp': { type: 'date' },
-    scheduled_timestamp: { type: 'date' },
-    rule: {
-      type: 'object',
-      properties: {
-        id: { type: 'keyword' },
-        version: { type: 'long' },
-      },
-    },
-    group_hash: { type: 'keyword' },
-    data: { type: 'flattened' },
-    status: { type: 'keyword' }, // breached | recovered | no_data
-    source: { type: 'keyword' },
-    type: { type: 'keyword' }, // signal | alert
-    episode: {
-      type: 'object',
-      properties: {
-        id: { type: 'keyword' },
-        status: { type: 'keyword' }, // inactive | pending | active | recovering
-        status_count: { type: 'long' }, // only set for pending and recovering
-      },
-    },
-  },
+/**
+ * Single source of truth for alert event document fields.
+ * Both the ES mapping and Zod schema are derived from this.
+ */
+export const alertEventsFieldMap: FieldMap = {
+  '@timestamp': { type: 'date', required: true },
+  scheduled_timestamp: { type: 'date', required: false },
+  'rule.id': { type: 'keyword', required: true },
+  'rule.version': { type: 'long', required: true },
+  group_hash: { type: 'keyword', required: true },
+  data: { type: 'flattened', required: true },
+  status: { type: 'keyword', required: true },
+  source: { type: 'keyword', required: true },
+  type: { type: 'keyword', required: true },
+  'episode.id': { type: 'keyword', required: true },
+  'episode.status': { type: 'keyword', required: true },
+  'episode.status_count': { type: 'long', required: false },
 };
+
+const mappings = mappingFromFieldMap(alertEventsFieldMap);
+
+const baseSchema = zodSchemaFromFieldMap(alertEventsFieldMap);
 
 const alertEventStatusSchema = z.enum(['breached', 'recovered', 'no_data']);
 const alertEventTypeSchema = z.enum(['signal', 'alert']);
 const alertEpisodeStatusSchema = z.enum(['inactive', 'pending', 'active', 'recovering']);
-const alertEpisodeStatusCountSchema = z.number().int().optional();
 
 export const alertEventStatus = alertEventStatusSchema.enum;
 export const alertEventType = alertEventTypeSchema.enum;
 export const alertEpisodeStatus = alertEpisodeStatusSchema.enum;
 
-export const alertEventSchema = z.object({
-  '@timestamp': z.string(),
-  scheduled_timestamp: z.string().optional(),
-  rule: z.object({
-    id: z.string(),
-    version: z.number(),
-  }),
-  group_hash: z.string(),
-  data: z.record(z.string(), z.any()),
+/**
+ * Zod schema for alert event documents, with enum refinements that go
+ * beyond what the FieldMap can express.
+ */
+export const alertEventSchema = baseSchema.extend({
   status: alertEventStatusSchema,
-  source: z.string(),
   type: alertEventTypeSchema,
   episode: z
     .object({
       id: z.string(),
       status: alertEpisodeStatusSchema,
-      status_count: alertEpisodeStatusCountSchema,
+      status_count: z.number().int().optional(),
     })
     .optional(),
 });

@@ -6,9 +6,10 @@
  */
 
 import type { IlmPolicy } from '@elastic/elasticsearch/lib/api/types';
-import type { MappingsDefinition } from '@kbn/es-mappings';
 import { z } from '@kbn/zod';
 import type { ResourceDefinition } from './types';
+import type { FieldMap } from './field_map';
+import { mappingFromFieldMap, zodSchemaFromFieldMap } from './field_map';
 
 export const ALERT_ACTIONS_DATA_STREAM = '.alerting-actions';
 export const ALERT_ACTIONS_DATA_STREAM_VERSION = 1;
@@ -29,36 +30,35 @@ export const ALERT_ACTIONS_ILM_POLICY: IlmPolicy = {
   },
 };
 
-const mappings: MappingsDefinition = {
-  dynamic: false,
-  properties: {
-    '@timestamp': { type: 'date' },
-    last_series_event_timestamp: { type: 'date' },
-    expiry: { type: 'date' },
-    actor: { type: 'keyword' },
-    action_type: { type: 'keyword' },
-    group_hash: { type: 'keyword' },
-    episode_id: { type: 'keyword' },
-    rule_id: { type: 'keyword' },
-    notification_group_id: { type: 'keyword' },
-    source: { type: 'keyword' },
-    reason: { type: 'text' },
-  },
+/**
+ * Single source of truth for alert action document fields.
+ * Both the ES mapping and Zod schema are derived from this.
+ */
+export const alertActionsFieldMap: FieldMap = {
+  '@timestamp': { type: 'date', required: true },
+  last_series_event_timestamp: { type: 'date', required: true },
+  expiry: { type: 'date', required: false },
+  actor: { type: 'keyword', required: true },
+  action_type: { type: 'keyword', required: true },
+  group_hash: { type: 'keyword', required: true },
+  episode_id: { type: 'keyword', required: false },
+  rule_id: { type: 'keyword', required: true },
+  notification_group_id: { type: 'keyword', required: false },
+  source: { type: 'keyword', required: false },
+  tags: { type: 'keyword', required: false, array: true },
+  reason: { type: 'text', required: false },
 };
 
-export const alertActionSchema = z.object({
-  '@timestamp': z.string(),
-  group_hash: z.string(),
-  last_series_event_timestamp: z.string(),
-  expiry: z.string().optional(),
+const mappings = mappingFromFieldMap(alertActionsFieldMap);
+
+const baseSchema = zodSchemaFromFieldMap(alertActionsFieldMap);
+
+/**
+ * Zod schema for alert action documents, with refinements that go beyond
+ * what the FieldMap can express (e.g. nullable fields).
+ */
+export const alertActionSchema = baseSchema.extend({
   actor: z.string().nullable(),
-  action_type: z.string(),
-  episode_id: z.string().optional(),
-  rule_id: z.string(),
-  notification_group_id: z.string().optional(),
-  source: z.string().optional(),
-  tags: z.array(z.string()).optional(),
-  reason: z.string().optional(),
 });
 
 export type AlertAction = z.infer<typeof alertActionSchema>;
