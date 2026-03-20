@@ -96,7 +96,8 @@ function zodTypeFromNode(node: TreeNode): { schema: ZodTypeAny; required: boolea
   }
 
   const objectSchema = z.object(shape);
-  const isRequired = node.field?.required ?? Object.keys(node.children).some((k) => requiredKeys.has(k));
+  const isRequired =
+    node.field?.required ?? Object.keys(node.children).some((k) => requiredKeys.has(k));
 
   return { schema: objectSchema, required: isRequired };
 }

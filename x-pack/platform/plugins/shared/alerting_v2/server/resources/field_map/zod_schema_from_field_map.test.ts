@@ -18,9 +18,9 @@ describe('zodSchemaFromFieldMap', () => {
     const schema = zodSchemaFromFieldMap(fieldMap);
     expect(schema.safeParse({ '@timestamp': '2026-01-01T00:00:00Z' }).success).toBe(true);
     expect(schema.safeParse({}).success).toBe(false);
-    expect(
-      schema.safeParse({ '@timestamp': '2026-01-01T00:00:00Z', reason: 'test' }).success
-    ).toBe(true);
+    expect(schema.safeParse({ '@timestamp': '2026-01-01T00:00:00Z', reason: 'test' }).success).toBe(
+      true
+    );
   });
 
   it('handles array fields', () => {
@@ -71,8 +71,7 @@ describe('zodSchemaFromFieldMap', () => {
 
     const schema = zodSchemaFromFieldMap(fieldMap);
     expect(
-      schema.safeParse({ name: 'test', count: 42, enabled: true, created_at: '2026-01-01' })
-        .success
+      schema.safeParse({ name: 'test', count: 42, enabled: true, created_at: '2026-01-01' }).success
     ).toBe(true);
     expect(
       schema.safeParse({ name: 123, count: 42, enabled: true, created_at: '2026-01-01' }).success
