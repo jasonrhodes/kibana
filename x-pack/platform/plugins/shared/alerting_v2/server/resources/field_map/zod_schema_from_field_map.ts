@@ -34,7 +34,7 @@ function zodTypeForEsType(esType: string): ZodTypeAny {
       return z.boolean();
     case 'flattened':
     case 'object':
-      return z.record(z.string(), z.any());
+      return z.record(z.string(), z.unknown());
     default:
       return z.unknown();
   }
