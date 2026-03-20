@@ -9,7 +9,7 @@ import type { IlmPolicy } from '@elastic/elasticsearch/lib/api/types';
 import { z } from '@kbn/zod';
 import type { ResourceDefinition } from './types';
 import type { FieldMap } from './field_map';
-import { mappingFromFieldMap, zodSchemaFromFieldMap } from './field_map';
+import { mappingFromFieldMap } from './field_map';
 
 export const ALERT_EVENTS_DATA_STREAM = '.alerting-events';
 export const ALERT_EVENTS_DATA_STREAM_VERSION = 1;
@@ -32,7 +32,11 @@ export const ALERT_EVENTS_ILM_POLICY: IlmPolicy = {
 
 /**
  * Single source of truth for alert event document fields.
- * Both the ES mapping and Zod schema are derived from this.
+ * The ES mapping is derived from this FieldMap. The Zod schema below is
+ * written explicitly so that TypeScript can infer precise types (the
+ * dynamic return type of zodSchemaFromFieldMap produces a generic
+ * Record<string, ZodTypeAny> that breaks .extend() type inference).
+ * A test in field_map.test.ts verifies these stay in sync.
  */
 export const alertEventsFieldMap: FieldMap = {
   '@timestamp': { type: 'date', required: true },
@@ -51,8 +55,6 @@ export const alertEventsFieldMap: FieldMap = {
 
 const mappings = mappingFromFieldMap(alertEventsFieldMap);
 
-const baseSchema = zodSchemaFromFieldMap(alertEventsFieldMap);
-
 const alertEventStatusSchema = z.enum(['breached', 'recovered', 'no_data']);
 const alertEventTypeSchema = z.enum(['signal', 'alert']);
 const alertEpisodeStatusSchema = z.enum(['inactive', 'pending', 'active', 'recovering']);
@@ -61,12 +63,17 @@ export const alertEventStatus = alertEventStatusSchema.enum;
 export const alertEventType = alertEventTypeSchema.enum;
 export const alertEpisodeStatus = alertEpisodeStatusSchema.enum;
 
-/**
- * Zod schema for alert event documents, with enum refinements that go
- * beyond what the FieldMap can express.
- */
-export const alertEventSchema = baseSchema.extend({
+export const alertEventSchema = z.object({
+  '@timestamp': z.string(),
+  scheduled_timestamp: z.string().optional(),
+  rule: z.object({
+    id: z.string(),
+    version: z.number(),
+  }),
+  group_hash: z.string(),
+  data: z.record(z.string(), z.unknown()),
   status: alertEventStatusSchema,
+  source: z.string(),
   type: alertEventTypeSchema,
   episode: z
     .object({

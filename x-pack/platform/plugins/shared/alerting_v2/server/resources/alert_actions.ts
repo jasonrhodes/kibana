@@ -9,7 +9,7 @@ import type { IlmPolicy } from '@elastic/elasticsearch/lib/api/types';
 import { z } from '@kbn/zod';
 import type { ResourceDefinition } from './types';
 import type { FieldMap } from './field_map';
-import { mappingFromFieldMap, zodSchemaFromFieldMap } from './field_map';
+import { mappingFromFieldMap } from './field_map';
 
 export const ALERT_ACTIONS_DATA_STREAM = '.alerting-actions';
 export const ALERT_ACTIONS_DATA_STREAM_VERSION = 1;
@@ -32,7 +32,9 @@ export const ALERT_ACTIONS_ILM_POLICY: IlmPolicy = {
 
 /**
  * Single source of truth for alert action document fields.
- * Both the ES mapping and Zod schema are derived from this.
+ * The ES mapping is derived from this FieldMap. The Zod schema below is
+ * written explicitly so that TypeScript can infer precise types.
+ * A test in field_map.test.ts verifies these stay in sync.
  */
 export const alertActionsFieldMap: FieldMap = {
   '@timestamp': { type: 'date', required: true },
@@ -51,14 +53,19 @@ export const alertActionsFieldMap: FieldMap = {
 
 const mappings = mappingFromFieldMap(alertActionsFieldMap);
 
-const baseSchema = zodSchemaFromFieldMap(alertActionsFieldMap);
-
-/**
- * Zod schema for alert action documents, with refinements that go beyond
- * what the FieldMap can express (e.g. nullable fields).
- */
-export const alertActionSchema = baseSchema.extend({
+export const alertActionSchema = z.object({
+  '@timestamp': z.string(),
+  last_series_event_timestamp: z.string(),
+  expiry: z.string().optional(),
   actor: z.string().nullable(),
+  action_type: z.string(),
+  group_hash: z.string(),
+  episode_id: z.string().optional(),
+  rule_id: z.string(),
+  notification_group_id: z.string().optional(),
+  source: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  reason: z.string().optional(),
 });
 
 export type AlertAction = z.infer<typeof alertActionSchema>;
