@@ -155,7 +155,9 @@ export class AppMenuRegistry {
       .filter((item) => item.isCustom)
       .slice(0, AppMenuRegistry.CUSTOM_ITEMS_LIMIT);
 
-    const cleanItems = [...regularItems, ...customItems].map(({ isCustom, ...item }) => item);
+    const cleanItems = [...regularItems, ...customItems]
+      .filter((item) => item.hidden !== 'all')
+      .map(({ isCustom, ...item }) => item);
 
     return {
       items: cleanItems,
