@@ -161,7 +161,7 @@
                     "summary": "Forbidden",
                     "value": {
                       "statusCode": 403,
-                      "error": "Unauthorized",
+                      "error": "Forbidden",
                       "message": "security_exception: action [slo_write] is unauthorized for user"
                     }
                   }
@@ -418,7 +418,7 @@
                     "summary": "Forbidden",
                     "value": {
                       "statusCode": 403,
-                      "error": "Unauthorized",
+                      "error": "Forbidden",
                       "message": "security_exception: action [slo_read] is unauthorized for user"
                     }
                   }
@@ -593,7 +593,7 @@
                     "summary": "Forbidden",
                     "value": {
                       "statusCode": 403,
-                      "error": "Unauthorized",
+                      "error": "Forbidden",
                       "message": "security_exception: action [slo_read] is unauthorized for user"
                     }
                   }
@@ -776,7 +776,7 @@
                     "summary": "Forbidden",
                     "value": {
                       "statusCode": 403,
-                      "error": "Unauthorized",
+                      "error": "Forbidden",
                       "message": "security_exception: action [slo_write] is unauthorized for user"
                     }
                   }
@@ -880,7 +880,7 @@
                     "summary": "Forbidden",
                     "value": {
                       "statusCode": 403,
-                      "error": "Unauthorized",
+                      "error": "Forbidden",
                       "message": "security_exception: action [slo_write] is unauthorized for user"
                     }
                   }
@@ -986,7 +986,7 @@
                     "summary": "Forbidden",
                     "value": {
                       "statusCode": 403,
-                      "error": "Unauthorized",
+                      "error": "Forbidden",
                       "message": "security_exception: action [slo_write] is unauthorized for user"
                     }
                   }
@@ -1092,7 +1092,7 @@
                     "summary": "Forbidden",
                     "value": {
                       "statusCode": 403,
-                      "error": "Unauthorized",
+                      "error": "Forbidden",
                       "message": "security_exception: action [slo_write] is unauthorized for user"
                     }
                   }
@@ -1247,7 +1247,7 @@
                     "summary": "Forbidden",
                     "value": {
                       "statusCode": 403,
-                      "error": "Unauthorized",
+                      "error": "Forbidden",
                       "message": "security_exception: action [slo_write] is unauthorized for user"
                     }
                   }
@@ -1402,7 +1402,7 @@
                     "summary": "Forbidden",
                     "value": {
                       "statusCode": 403,
-                      "error": "Unauthorized",
+                      "error": "Forbidden",
                       "message": "security_exception: action [slo_write] is unauthorized for user"
                     }
                   }
@@ -1626,7 +1626,7 @@
                     "summary": "Forbidden",
                     "value": {
                       "statusCode": 403,
-                      "error": "Unauthorized",
+                      "error": "Forbidden",
                       "message": "security_exception: action [slo_write] is unauthorized for user"
                     }
                   }
@@ -1745,7 +1745,7 @@
                     "summary": "Forbidden",
                     "value": {
                       "statusCode": 403,
-                      "error": "Unauthorized",
+                      "error": "Forbidden",
                       "message": "security_exception: action [slo_write] is unauthorized for user"
                     }
                   }
@@ -1880,7 +1880,7 @@
                     "summary": "Forbidden",
                     "value": {
                       "statusCode": 403,
-                      "error": "Unauthorized",
+                      "error": "Forbidden",
                       "message": "security_exception: action [slo_write] is unauthorized for user"
                     }
                   }

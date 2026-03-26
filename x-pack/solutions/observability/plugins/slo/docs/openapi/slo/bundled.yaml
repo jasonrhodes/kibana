@@ -109,7 +109,7 @@ paths:
                   summary: Forbidden
                   value:
                     statusCode: 403
-                    error: Unauthorized
+                    error: Forbidden
                     message: 'security_exception: action [slo_write] is unauthorized for user'
         '409':
           description: Conflict - The SLO id already exists
@@ -286,7 +286,7 @@ paths:
                   summary: Forbidden
                   value:
                     statusCode: 403
-                    error: Unauthorized
+                    error: Forbidden
                     message: 'security_exception: action [slo_read] is unauthorized for user'
         '404':
           description: Not found response
@@ -405,7 +405,7 @@ paths:
                   summary: Forbidden
                   value:
                     statusCode: 403
-                    error: Unauthorized
+                    error: Forbidden
                     message: 'security_exception: action [slo_read] is unauthorized for user'
         '404':
           description: Not found response
@@ -527,7 +527,7 @@ paths:
                   summary: Forbidden
                   value:
                     statusCode: 403
-                    error: Unauthorized
+                    error: Forbidden
                     message: 'security_exception: action [slo_write] is unauthorized for user'
         '404':
           description: Not found response
@@ -593,7 +593,7 @@ paths:
                   summary: Forbidden
                   value:
                     statusCode: 403
-                    error: Unauthorized
+                    error: Forbidden
                     message: 'security_exception: action [slo_write] is unauthorized for user'
         '404':
           description: Not found response
@@ -660,7 +660,7 @@ paths:
                   summary: Forbidden
                   value:
                     statusCode: 403
-                    error: Unauthorized
+                    error: Forbidden
                     message: 'security_exception: action [slo_write] is unauthorized for user'
         '404':
           description: Not found response
@@ -727,7 +727,7 @@ paths:
                   summary: Forbidden
                   value:
                     statusCode: 403
-                    error: Unauthorized
+                    error: Forbidden
                     message: 'security_exception: action [slo_write] is unauthorized for user'
         '404':
           description: Not found response
@@ -831,7 +831,7 @@ paths:
                   summary: Forbidden
                   value:
                     statusCode: 403
-                    error: Unauthorized
+                    error: Forbidden
                     message: 'security_exception: action [slo_write] is unauthorized for user'
         '404':
           description: Not found response
@@ -930,7 +930,7 @@ paths:
                   summary: Forbidden
                   value:
                     statusCode: 403
-                    error: Unauthorized
+                    error: Forbidden
                     message: 'security_exception: action [slo_write] is unauthorized for user'
   /s/{spaceId}/internal/observability/slos/_definitions:
     get:
@@ -1070,7 +1070,7 @@ paths:
                   summary: Forbidden
                   value:
                     statusCode: 403
-                    error: Unauthorized
+                    error: Forbidden
                     message: 'security_exception: action [slo_write] is unauthorized for user'
   /s/{spaceId}/api/observability/slos/_bulk_delete:
     post:
@@ -1145,7 +1145,7 @@ paths:
                   summary: Forbidden
                   value:
                     statusCode: 403
-                    error: Unauthorized
+                    error: Forbidden
                     message: 'security_exception: action [slo_write] is unauthorized for user'
   /s/{spaceId}/api/observability/slos/_bulk_delete/{taskId}:
     get:
@@ -1229,7 +1229,7 @@ paths:
                   summary: Forbidden
                   value:
                     statusCode: 403
-                    error: Unauthorized
+                    error: Forbidden
                     message: 'security_exception: action [slo_write] is unauthorized for user'
 components:
   parameters:
