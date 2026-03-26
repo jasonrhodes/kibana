@@ -92,7 +92,7 @@ get:
                 error: Unauthorized
                 message: "security_exception: unable to authenticate user for REST request [/api/observability/slos]"
     '403':
-      description: Unauthorized response
+      description: Forbidden response
       content:
         application/json:
           schema:
@@ -216,7 +216,7 @@ put:
                 error: Unauthorized
                 message: "security_exception: unable to authenticate user for REST request [/api/observability/slos]"
     '403':
-      description: Unauthorized response
+      description: Forbidden response
       content:
         application/json:
           schema:
@@ -284,7 +284,7 @@ delete:
                 error: Unauthorized
                 message: "security_exception: unable to authenticate user for REST request [/api/observability/slos]"
     '403':
-      description: Unauthorized response
+      description: Forbidden response
       content:
         application/json:
           schema:

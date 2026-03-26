@@ -99,7 +99,7 @@ paths:
                     error: Unauthorized
                     message: 'security_exception: unable to authenticate user for REST request [/api/observability/slos]'
         '403':
-          description: Unauthorized response
+          description: Forbidden response
           content:
             application/json:
               schema:
@@ -276,7 +276,7 @@ paths:
                     error: Unauthorized
                     message: 'security_exception: unable to authenticate user for REST request [/api/observability/slos]'
         '403':
-          description: Unauthorized response
+          description: Forbidden response
           content:
             application/json:
               schema:
@@ -395,7 +395,7 @@ paths:
                     error: Unauthorized
                     message: 'security_exception: unable to authenticate user for REST request [/api/observability/slos]'
         '403':
-          description: Unauthorized response
+          description: Forbidden response
           content:
             application/json:
               schema:
@@ -517,7 +517,7 @@ paths:
                     error: Unauthorized
                     message: 'security_exception: unable to authenticate user for REST request [/api/observability/slos]'
         '403':
-          description: Unauthorized response
+          description: Forbidden response
           content:
             application/json:
               schema:
@@ -583,7 +583,7 @@ paths:
                     error: Unauthorized
                     message: 'security_exception: unable to authenticate user for REST request [/api/observability/slos]'
         '403':
-          description: Unauthorized response
+          description: Forbidden response
           content:
             application/json:
               schema:
@@ -650,7 +650,7 @@ paths:
                     error: Unauthorized
                     message: 'security_exception: unable to authenticate user for REST request [/api/observability/slos]'
         '403':
-          description: Unauthorized response
+          description: Forbidden response
           content:
             application/json:
               schema:
@@ -717,7 +717,7 @@ paths:
                     error: Unauthorized
                     message: 'security_exception: unable to authenticate user for REST request [/api/observability/slos]'
         '403':
-          description: Unauthorized response
+          description: Forbidden response
           content:
             application/json:
               schema:
@@ -821,7 +821,7 @@ paths:
                     error: Unauthorized
                     message: 'security_exception: unable to authenticate user for REST request [/api/observability/slos]'
         '403':
-          description: Unauthorized response
+          description: Forbidden response
           content:
             application/json:
               schema:
@@ -920,7 +920,7 @@ paths:
                     error: Unauthorized
                     message: 'security_exception: unable to authenticate user for REST request [/api/observability/slos]'
         '403':
-          description: Unauthorized response
+          description: Forbidden response
           content:
             application/json:
               schema:
@@ -999,7 +999,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/401_response'
         '403':
-          description: Unauthorized response
+          description: Forbidden response
           content:
             application/json:
               schema:
@@ -1060,7 +1060,7 @@ paths:
                     error: Unauthorized
                     message: 'security_exception: unable to authenticate user for REST request [/api/observability/slos]'
         '403':
-          description: Unauthorized response
+          description: Forbidden response
           content:
             application/json:
               schema:
@@ -1135,7 +1135,7 @@ paths:
                     error: Unauthorized
                     message: 'security_exception: unable to authenticate user for REST request [/api/observability/slos]'
         '403':
-          description: Unauthorized response
+          description: Forbidden response
           content:
             application/json:
               schema:
@@ -1219,7 +1219,7 @@ paths:
                     error: Unauthorized
                     message: 'security_exception: unable to authenticate user for REST request [/api/observability/slos]'
         '403':
-          description: Unauthorized response
+          description: Forbidden response
           content:
             application/json:
               schema:
@@ -2208,7 +2208,7 @@ components:
           type: string
           example: "[security_exception\n\tRoot causes:\n\t\tsecurity_exception: unable to authenticate user [elastics] for REST request [/_security/_authenticate]]: unable to authenticate user [elastics] for REST request [/_security/_authenticate]"
     403_response:
-      title: Unauthorized
+      title: Forbidden
       type: object
       required:
         - statusCode
@@ -2220,10 +2220,10 @@ components:
           example: 403
         error:
           type: string
-          example: Unauthorized
+          example: Forbidden
         message:
           type: string
-          example: "[security_exception\n\tRoot causes:\n\t\tsecurity_exception: unable to authenticate user [elastics] for REST request [/_security/_authenticate]]: unable to authenticate user [elastics] for REST request [/_security/_authenticate]"
+          example: "[security_exception\n\tRoot causes:\n\t\tsecurity_exception: action [slo_write] is unauthorized for user [limited_user] for REST request [/api/observability/slos]]: action [slo_write] is unauthorized for user [limited_user]"
     404_response:
       title: Not found
       type: object
