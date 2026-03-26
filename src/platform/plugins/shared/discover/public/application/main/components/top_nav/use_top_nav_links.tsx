@@ -228,7 +228,6 @@ export const useTopNavLinks = ({
     hasUnsavedChanges,
     totalHitsState,
     intl,
-    canCreateESQLRule,
     showCreateRuleV2,
   ]);
 
