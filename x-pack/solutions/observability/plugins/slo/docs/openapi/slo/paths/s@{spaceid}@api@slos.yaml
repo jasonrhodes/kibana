@@ -185,7 +185,7 @@ get:
               value:
                 page: 1
                 perPage: 25
-                total: 2
+                total: 42
                 results:
                   - id: 8853df00-ae2e-11ed-90af-09bb6422b258
                     name: My Service Availability
