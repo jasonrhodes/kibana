@@ -69411,7 +69411,7 @@ paths:
                           type: rolling
                         updatedAt: '2025-01-12T10:03:19.000Z'
                         version: 2
-                    total: 2
+                    total: 42
               schema:
                 $ref: '#/components/schemas/SLOs_find_slo_response'
           description: Successful request
@@ -69448,12 +69448,12 @@ paths:
                 forbiddenExample:
                   summary: Forbidden
                   value:
-                    error: Unauthorized
+                    error: Forbidden
                     message: 'security_exception: action [slo_read] is unauthorized for user'
                     statusCode: 403
               schema:
                 $ref: '#/components/schemas/SLOs_403_response'
-          description: Unauthorized response
+          description: Forbidden response
         '404':
           content:
             application/json:
@@ -69557,12 +69557,12 @@ paths:
                 forbiddenExample:
                   summary: Forbidden
                   value:
-                    error: Unauthorized
+                    error: Forbidden
                     message: 'security_exception: action [slo_write] is unauthorized for user'
                     statusCode: 403
               schema:
                 $ref: '#/components/schemas/SLOs_403_response'
-          description: Unauthorized response
+          description: Forbidden response
         '409':
           content:
             application/json:
@@ -69648,12 +69648,12 @@ paths:
                 forbiddenExample:
                   summary: Forbidden
                   value:
-                    error: Unauthorized
+                    error: Forbidden
                     message: 'security_exception: action [slo_write] is unauthorized for user'
                     statusCode: 403
               schema:
                 $ref: '#/components/schemas/SLOs_403_response'
-          description: Unauthorized response
+          description: Forbidden response
       summary: Bulk delete SLO definitions and their associated summary and rollup data.
       tags:
         - slo
@@ -69735,12 +69735,12 @@ paths:
                 forbiddenExample:
                   summary: Forbidden
                   value:
-                    error: Unauthorized
+                    error: Forbidden
                     message: 'security_exception: action [slo_write] is unauthorized for user'
                     statusCode: 403
               schema:
                 $ref: '#/components/schemas/SLOs_403_response'
-          description: Unauthorized response
+          description: Forbidden response
       summary: Retrieve the status of the bulk deletion
       tags:
         - slo
@@ -69824,12 +69824,12 @@ paths:
                 forbiddenExample:
                   summary: Forbidden
                   value:
-                    error: Unauthorized
+                    error: Forbidden
                     message: 'security_exception: action [slo_write] is unauthorized for user'
                     statusCode: 403
               schema:
                 $ref: '#/components/schemas/SLOs_403_response'
-          description: Unauthorized response
+          description: Forbidden response
       summary: Batch delete rollup and summary data
       tags:
         - slo
@@ -69895,12 +69895,12 @@ paths:
                 forbiddenExample:
                   summary: Forbidden
                   value:
-                    error: Unauthorized
+                    error: Forbidden
                     message: 'security_exception: action [slo_write] is unauthorized for user'
                     statusCode: 403
               schema:
                 $ref: '#/components/schemas/SLOs_403_response'
-          description: Unauthorized response
+          description: Forbidden response
       summary: Batch delete rollup and summary data
       tags:
         - slo
@@ -69952,12 +69952,12 @@ paths:
                 forbiddenExample:
                   summary: Forbidden
                   value:
-                    error: Unauthorized
+                    error: Forbidden
                     message: 'security_exception: action [slo_write] is unauthorized for user'
                     statusCode: 403
               schema:
                 $ref: '#/components/schemas/SLOs_403_response'
-          description: Unauthorized response
+          description: Forbidden response
         '404':
           content:
             application/json:
@@ -70073,12 +70073,12 @@ paths:
                 forbiddenExample:
                   summary: Forbidden
                   value:
-                    error: Unauthorized
+                    error: Forbidden
                     message: 'security_exception: action [slo_read] is unauthorized for user'
                     statusCode: 403
               schema:
                 $ref: '#/components/schemas/SLOs_403_response'
-          description: Unauthorized response
+          description: Forbidden response
         '404':
           content:
             application/json:
@@ -70198,12 +70198,12 @@ paths:
                 forbiddenExample:
                   summary: Forbidden
                   value:
-                    error: Unauthorized
+                    error: Forbidden
                     message: 'security_exception: action [slo_write] is unauthorized for user'
                     statusCode: 403
               schema:
                 $ref: '#/components/schemas/SLOs_403_response'
-          description: Unauthorized response
+          description: Forbidden response
         '404':
           content:
             application/json:
@@ -70305,12 +70305,12 @@ paths:
                 forbiddenExample:
                   summary: Forbidden
                   value:
-                    error: Unauthorized
+                    error: Forbidden
                     message: 'security_exception: action [slo_write] is unauthorized for user'
                     statusCode: 403
               schema:
                 $ref: '#/components/schemas/SLOs_403_response'
-          description: Unauthorized response
+          description: Forbidden response
         '404':
           content:
             application/json:
@@ -70375,12 +70375,12 @@ paths:
                 forbiddenExample:
                   summary: Forbidden
                   value:
-                    error: Unauthorized
+                    error: Forbidden
                     message: 'security_exception: action [slo_write] is unauthorized for user'
                     statusCode: 403
               schema:
                 $ref: '#/components/schemas/SLOs_403_response'
-          description: Unauthorized response
+          description: Forbidden response
         '404':
           content:
             application/json:
@@ -70445,12 +70445,12 @@ paths:
                 forbiddenExample:
                   summary: Forbidden
                   value:
-                    error: Unauthorized
+                    error: Forbidden
                     message: 'security_exception: action [slo_write] is unauthorized for user'
                     statusCode: 403
               schema:
                 $ref: '#/components/schemas/SLOs_403_response'
-          description: Unauthorized response
+          description: Forbidden response
         '404':
           content:
             application/json:
@@ -70538,7 +70538,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SLOs_403_response'
-          description: Unauthorized response
+          description: Forbidden response
       summary: Get the SLO definitions
       tags:
         - slo
@@ -98461,14 +98461,14 @@ components:
         - error
         - message
     SLOs_403_response:
-      title: Unauthorized
+      title: Forbidden
       type: object
       properties:
         error:
-          example: Unauthorized
+          example: Forbidden
           type: string
         message:
-          example: "[security_exception\n\tRoot causes:\n\t\tsecurity_exception: unable to authenticate user [elastics] for REST request [/_security/_authenticate]]: unable to authenticate user [elastics] for REST request [/_security/_authenticate]"
+          example: "[security_exception\n\tRoot causes:\n\t\tsecurity_exception: action [slo_write] is unauthorized for user [limited_user] for REST request [/api/observability/slos]]: action [slo_write] is unauthorized for user [limited_user]"
           type: string
         statusCode:
           example: 403
