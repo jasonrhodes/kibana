@@ -14,6 +14,18 @@ import type { DataViewsPublicPluginStart } from '@kbn/data-views-plugin/public';
 import type { LensPublicStart } from '@kbn/lens-plugin/public';
 import { mountAlertingV2App } from './main';
 import { ALERTING_V2_APP_ID } from './constants';
+import {
+  PREVIEW_SECTION_ID,
+  PREVIEW_WHY_V2_APP_ID,
+  PREVIEW_RULES_APP_ID,
+  PREVIEW_ALERTS_APP_ID,
+  PREVIEW_NOTIFICATION_POLICIES_APP_ID,
+} from './preview/constants';
+import { createMountFn } from './preview/mount';
+import { WhyV2App } from './preview/apps/why_v2_app';
+import { RulesApp } from './preview/apps/rules_app';
+import { AlertsApp } from './preview/apps/alerts_app';
+import { NotificationPoliciesApp } from './preview/apps/notification_policies_app';
 import { NotificationPoliciesApi } from './services/notification_policies_api';
 import { RulesApi } from './services/rules_api';
 import { WorkflowsApi } from './services/workflows_api';
@@ -55,6 +67,49 @@ export const module = new ContainerModule(({ bind }) => {
       async mount(params) {
         const [coreStart] = await getStartServices();
         return mountAlertingV2App({ params, container: coreStart.injection.getContainer() });
+      },
+    });
+
+    const previewSection = management.sections.register({
+      id: PREVIEW_SECTION_ID,
+      title: 'V2 Alerting Preview',
+      order: 1,
+      tip: 'Preview the next-generation alerting experience',
+    });
+
+    previewSection.registerApp({
+      id: PREVIEW_WHY_V2_APP_ID,
+      title: 'Why v2?',
+      order: 0,
+      async mount(params) {
+        return createMountFn(WhyV2App)(params);
+      },
+    });
+
+    previewSection.registerApp({
+      id: PREVIEW_RULES_APP_ID,
+      title: 'Rules',
+      order: 1,
+      async mount(params) {
+        return createMountFn(RulesApp)(params);
+      },
+    });
+
+    previewSection.registerApp({
+      id: PREVIEW_ALERTS_APP_ID,
+      title: 'Alerts & Episodes',
+      order: 2,
+      async mount(params) {
+        return createMountFn(AlertsApp)(params);
+      },
+    });
+
+    previewSection.registerApp({
+      id: PREVIEW_NOTIFICATION_POLICIES_APP_ID,
+      title: 'Notification Policies',
+      order: 3,
+      async mount(params) {
+        return createMountFn(NotificationPoliciesApp)(params);
       },
     });
   });
