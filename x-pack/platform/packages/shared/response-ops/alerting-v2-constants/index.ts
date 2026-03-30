@@ -5,9 +5,4 @@
  * 2.0.
  */
 
-export const API_HEADERS = {
-  'kbn-xsrf': 'true',
-};
-
-export { ALERTING_V2_RULE_API_PATH as RULE_API_PATH } from '@kbn/alerting-v2-constants';
-export const ALERTING_EVENTS_INDEX = '.rule-events';
+export const ALERTING_V2_RULE_API_PATH = '/api/alerting/v2/rules' as const;

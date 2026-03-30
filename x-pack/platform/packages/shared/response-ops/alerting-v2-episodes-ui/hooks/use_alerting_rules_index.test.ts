@@ -8,10 +8,8 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import { useAlertingRulesIndex } from './use_alerting_rules_index';
 import type { FindRulesResponse } from '@kbn/alerting-v2-plugin/public/services/rules_api';
+import { ALERTING_V2_RULE_API_PATH } from '@kbn/alerting-v2-constants';
 import { httpServiceMock } from '@kbn/core-http-browser-mocks';
-
-// Must match RULE_API_PATH in use_alerting_rules_index.ts
-const RULE_API_PATH = '/api/alerting/v2/rules';
 
 jest.mock('react-use/lib/useAsync', () => ({
   __esModule: true,
@@ -73,7 +71,7 @@ describe('useAlertingRulesIndex', () => {
     );
 
     await waitFor(() =>
-      expect(mockHttp.get).toHaveBeenCalledWith(`${RULE_API_PATH}/_bulk`, {
+      expect(mockHttp.get).toHaveBeenCalledWith(`${ALERTING_V2_RULE_API_PATH}/_bulk`, {
         query: { ids: [ruleId] },
       })
     );
