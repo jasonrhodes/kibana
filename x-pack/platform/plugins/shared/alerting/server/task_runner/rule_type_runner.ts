@@ -40,6 +40,10 @@ import type {
 } from './types';
 import { withAlertingSpan } from './lib';
 import type { WrappedSearchSourceClient } from '../lib/wrap_search_source_client';
+import {
+  AlertStateChangedTriggerId,
+  type AlertStateChangedPayload,
+} from '../../common/workflows/triggers/alert_state_changed';
 
 interface ConstructorOpts<
   Params extends RuleTypeParams,
@@ -428,7 +432,63 @@ export class RuleTypeRunner<
       ),
     });
 
+    const newIds = Object.keys(alertsClient.getProcessedAlerts('new'));
+    const recoveredIds = Object.keys(alertsClient.getProcessedAlerts('recovered'));
+    const activeCount = Object.keys(alertsClient.getProcessedAlerts('active')).length;
+    this.emitAlertStateChangedEvent({ context, rule, ruleTypeId: ruleType.id, newIds, recoveredIds, activeCount });
+
     return { state: updatedRuleTypeState };
+  }
+
+  private emitAlertStateChangedEvent({
+    context,
+    rule,
+    ruleTypeId,
+    newIds,
+    recoveredIds,
+    activeCount,
+  }: {
+    context: RuleTypeRunnerContext;
+    rule: RuleData<RuleTypeParams>;
+    ruleTypeId: string;
+    newIds: string[];
+    recoveredIds: string[];
+    activeCount: number;
+  }): void {
+    const { workflowsExtensions } = this.options.context;
+    if (!workflowsExtensions) return;
+
+    if (newIds.length === 0 && recoveredIds.length === 0 && activeCount === 0) return;
+
+    const payload: AlertStateChangedPayload = {
+      rule: {
+        id: context.ruleId,
+        name: rule.name,
+        spaceId: context.spaceId,
+        consumer: rule.consumer,
+        ruleTypeId,
+        tags: rule.tags,
+      },
+      alerts: {
+        new: { count: newIds.length, ids: newIds },
+        recovered: { count: recoveredIds.length, ids: recoveredIds },
+        active: { count: activeCount },
+      },
+    };
+
+    setImmediate(() => {
+      workflowsExtensions
+        .getClient(context.request)
+        .then((client) => {
+          if (!client.isWorkflowsAvailable) return;
+          return client.emitEvent(AlertStateChangedTriggerId, payload);
+        })
+        .catch((err: Error) => {
+          context.logger.error(
+            `[alerting.alertStateChanged] Failed to emit workflow trigger for rule ${context.ruleId}: ${err.message}`
+          );
+        });
+    });
   }
 
   private shouldLogAndScheduleActionsForAlerts(ruleTypeShouldCancel?: boolean) {
